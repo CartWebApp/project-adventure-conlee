@@ -1,12 +1,16 @@
 const windowWidth = window.innerWidth;
 const windowHight = window.innerHeight;
 
+
+
 // module aliases
 const Engine = Matter.Engine,
     Render = Matter.Render,
     Runner = Matter.Runner,
     Bodies = Matter.Bodies,
-    Composite = Matter.Composite;
+    Composite = Matter.Composite,
+    Mouse = Matter.Mouse,
+    MouseConstraint = Matter.MouseConstraint;
 
 // create an engine
 const engine = Engine.create();
@@ -18,42 +22,64 @@ const render = Render.create({
     options: {
         width: windowWidth,
         height: windowHight,
-        pixelRatio: 1,
+        pixelRatio: 3,
         background: '#fafafa',
         wireframeBackground: '#222',
-        hasBounds: false,
+        hasBounds: true,
         enabled: true,
         wireframes: true,
         showSleeping: true,
-        showDebug: false,
-        showBroadphase: false,
-        showBounds: false,
-        showVelocity: false,
-        showCollisions: false,
-        showSeparations: false,
-        showAxes: false,
-        showPositions: false,
-        showAngleIndicator: false,
-        showIds: false,
-        showShadows: false,
-        showVertexNumbers: false,
-        showConvexHulls: false,
-        showInternalEdges: false,
+        showDebug: true,
+        showBroadphase: true,
+        showBounds: true,
+        showVelocity: true,
+        showCollisions: true,
+        showSeparations: true,
+        showAxes: true,
+        showPositions: true,
+        showAngleIndicator: true,
+        showIds: true,
+        showShadows: true,
+        showVertexNumbers: true,
+        showConvexHulls: true,
+        showInternalEdges: true,
         showMousePosition: false
     }
 });
 
+
 // create two boxes and a ground
+function dynamicBox(X, Y, W, H) {
+    const DynamicBox = Bodies.rectangle(X, Y, W, H);
+    return DynamicBox
+}
 const boxA = Bodies.rectangle(400, 200, 80, 80);
-const boxB = Bodies.rectangle(450, 50, 80, 80);
-const ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
+const boxB = Bodies.rectangle(450, 50, 90, 80);
+const boxC = dynamicBox(100, 100, 100, 100)
+const ground = Bodies.rectangle(400, 800, 1000, 1, { isStatic: true });
+const mouseBox = Bodies.rectangle(0, 0, 10, 10);
 
 // add all of the bodies to the world
-Composite.add(engine.world, [boxA, boxB, ground]);
+// do NOT directly add a dynamicBox() element to this, it is UNSTABLE
+Composite.add(engine.world, [boxA, boxB, boxC, ground]);
+
+const mouse = Mouse.create(render.canvas)
+
+const mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse,
+    constraint: {
+        render: {
+            visible:true
+        }
+    }
+});
+
+Composite.add(engine.world, mouseConstraint);
 
 // run the renderer
 Render.run(render);
 
+render.mouse = mouse;
 // create runner
 const runner = Runner.create();
 
