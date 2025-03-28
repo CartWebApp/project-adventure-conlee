@@ -1,5 +1,18 @@
-const windowWidth = window.innerWidth;
-const windowHight = window.innerHeight;
+let windowWidth = window.innerWidth;
+let windowHeight = window.innerHeight;
+
+// window.addEventListener("resize", function(event) {
+//     let newWidth = window.innerWidth
+//     let newHeight = window.innerHeight
+
+//     console.log(window.innerWidth + ' wide by ' + window.innerHeight +' high');
+//     windowWidth = newWidth
+//     windowHeight = newHeight
+//     render.canvas.width = windowWidth; console.log("change")
+//     return [windowWidth, windowHeight]
+// })
+
+
 
 
 
@@ -16,13 +29,13 @@ const Engine = Matter.Engine,
 const engine = Engine.create();
 
 // create a renderer
-const render = Render.create({
+let render = Render.create({
     element: document.body,
     engine: engine,
     // VVVVV configures what you see in the game engine
     options: {
         width: windowWidth,
-        height: windowHight,
+        height: windowHeight,
         pixelRatio: 3,
         background: '#fafafa',
         wireframeBackground: '#222',
@@ -58,13 +71,14 @@ function dynamicBox(X, Y, W, H) {
 const boxA = Bodies.rectangle(400, 200, 80, 80, { inertia: Infinity, inverseInertia: 0 });
 const boxB = Bodies.rectangle(450, 50, 90, 80);
 const boxC = dynamicBox(100, 100, 100, 100)
-const boxD = dynamicBox(100, 200, 100, 100)
+const boxD = dynamicBox(100, 400, 100, 100)
+const player = Bodies.rectangle(600, 0, 100, 200, { inertia: Infinity, inverseInertia: 0 })
 const ground = Bodies.rectangle(400, 700, 10000, 1, { isStatic: true });
 const mouseBox = Bodies.rectangle(0, 0, 10, 10);
 
 // add all of the bodies to the world
 // do NOT directly add a dynamicBox() element to this, it is UNSTABLE
-Composite.add(engine.world, [boxA, boxB, boxC, boxD, ground]);
+Composite.add(engine.world, [boxA, boxB, boxC, boxD, ground, player]);
 
 const mouse = Mouse.create(render.canvas)
 
@@ -124,4 +138,5 @@ document.addEventListener("keydown", function(event) {
     } 
     Matter.Body.setVelocity(boxA, vector(4, 0))
     moveRight()
+    // we need to use the player and get keyboard inputs
 })
