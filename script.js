@@ -12,10 +12,6 @@ let windowHeight = window.innerHeight;
 //     return [windowWidth, windowHeight]
 // })
 
-
-
-
-
 // module aliases
 const Engine = Matter.Engine,
     Render = Matter.Render,
@@ -36,48 +32,70 @@ let render = Render.create({
     options: {
         width: windowWidth,
         height: windowHeight,
-        pixelRatio: 3,
+        pixelRatio: 2,
         background: '#fafafa',
         wireframeBackground: '#222',
-        hasBounds: true,
         enabled: true,
-        wireframes: true,
-        showSleeping: true,
-        showDebug: true,
-        showBroadphase: true,
-        showBounds: true,
-        showVelocity: true,
-        showCollisions: true,
-        showSeparations: true,
-        showAxes: true,
-        showPositions: true,
-        showAngleIndicator: true,
-        showIds: true,
+        hasBounds: true,
+        wireframes: false,
         showShadows: true,
-        showVertexNumbers: true,
+        showSleeping: true,
+        showBroadphase: true,
         showConvexHulls: true,
         showInternalEdges: true,
-        showMousePosition: false
+        showMousePosition: false,
+        // debug stuff VVV
+        showIds: false, // important
+        showAxes: false, // important
+        showDebug: false, // important
+        showBounds: false, // important
+        showVelocity: false, // important
+        showPositions: false, // important
+        showCollisions: false, // important
+        showSeparations: false, // important
+        showVertexNumbers: false, // important
+        showAngleIndicator: false, // important
     }
 });
 
-
+// **Important:** Disable image smoothing here, after the renderer is created.
+render.context.imageSmoothingEnabled = false;
+//For older browsers that use vendor prefixes.
+render.context.mozImageSmoothingEnabled = false;
+render.context.webkitImageSmoothingEnabled = false;
+render.context.msImageSmoothingEnabled = false;
 
 // create two boxes and a ground
 function dynamicBox(X, Y, W, H) {
     const DynamicBox = Bodies.rectangle(X, Y, W, H);
     return DynamicBox
 }
+
+
 const boxA = Bodies.rectangle(400, 200, 80, 80, { inertia: Infinity, inverseInertia: 0 });
 const boxB = Bodies.rectangle(450, 50, 90, 80);
 const boxC = dynamicBox(100, 100, 100, 100)
 const boxD = dynamicBox(100, 400, 100, 100)
-const player = Bodies.rectangle(600, 0, 100, 200, { inertia: Infinity, inverseInertia: 0 })
-const ground = Bodies.rectangle(400, 700, 10000, 1, { isStatic: true });
+const player = Bodies.rectangle(600, 0, 100, 200, {
+    inertia: Infinity, inverseInertia: 0,
+    render: {
+        sprite: {
+            texture: "guy-standingT.png",
+            xScale: -5,
+            yScale: 5
+        }
+    },
+    friction: 0.5,
+    frictionStatic: 0,
+})
+const ground = Bodies.rectangle(400, 700, 10000, 1, {
+    isStatic: true,
+    render: {
+        fillStyle: 'red' // Set the fill color to red
+    }
+});
 const mouseBox = Bodies.rectangle(0, 0, 10, 10);
 
-// add all of the bodies to the world
-// do NOT directly add a dynamicBox() element to this, it is UNSTABLE
 Composite.add(engine.world, [boxA, boxB, boxC, boxD, ground, player]);
 
 const mouse = Mouse.create(render.canvas)
@@ -86,7 +104,7 @@ const mouseConstraint = MouseConstraint.create(engine, {
     mouse: mouse,
     constraint: {
         render: {
-            visible:true
+            visible: true
         }
     }
 });
@@ -106,37 +124,96 @@ Runner.run(runner, engine);
 let cameraX = 500; // Start at the left edge
 
 function moveScreen(x) {
-  let bounds = render.bounds;
-  // Calculate the new bounds based on cameraX
-  bounds.min.x = x - (render.canvas.width / 6);
-  bounds.max.x = x + (render.canvas.width / 6);
+    let bounds = render.bounds;
+    // Calculate the new bounds based on cameraX
+    bounds.min.x = x - (render.canvas.width / 6);
+    bounds.max.x = x + (render.canvas.width / 6);
 }
 
 // Example: Move the screen to the right
 function moveRight() {
-  cameraX += 10; // Move 10 pixels to the right
-  moveScreen(cameraX);
+    cameraX += 10; // Move 10 pixels to the right
+    moveScreen(cameraX);
 }
 
 // Example: Move the screen to the left
 function moveLeft() {
-  cameraX -= 10; // Move 10 pixels to the left
-  moveScreen(cameraX);
+    cameraX -= 10; // Move 10 pixels to the left
+    moveScreen(cameraX);
+}
+
+function vector(x, y) {
+    let createdVector = Matter.Vector.create(x, y)
+    return createdVector
 }
 
 
-document.addEventListener("keydown", function(event) {
-    let input = event.key
-    console.log(input);
-    Matter.Body.rotate(boxB, 0.2)
-    let upwardsVector = Matter.Vector.create(0, -10)
-    Matter.Body.setVelocity(boxC, upwardsVector)
+// document.addEventListener("keydown", function (event) {
+//     let input = event.key
+//     input = String(input)
+//     let playerVX = player.velocity.x
+//     let playerVY = player.velocity.y
+//     switch (input) {
+//         case "w":
+//             Matter.Body.setVelocity(player, vector(playerVX, -10));
+//             player.render.sprite.xScale = -5;
+//             break;
+//         case "d":
+//             Matter.Body.setVelocity(player, vector(5, playerVY));
+//             player.render.sprite.yScale = -5;
+//             break;
+//         case "a":
+//             Matter.Body.setVelocity(player, vector(-5, playerVY));
+//             player.render.sprite.yScale = 5;
+//             player.render.sprite.xScale = 5;
+//             console.log(player)
+//             break;
+//     }
+// })
 
-    function vector(x, y) {
-        let createdVector = Matter.Vector.create(x, y)
-        return createdVector
-    } 
-    Matter.Body.setVelocity(boxA, vector(4, 0))
-    moveRight()
-    // we need to use the player and get keyboard inputs
+let inputKeysArray = []
+
+document.addEventListener("keydown", function (event) {
+    let input = String(event.key)
+    if (!inputKeysArray.includes(input)) {
+        console.log("IT DONT HAVE IT")
+        inputKeysArray.push(input);
+        return inputKeysArray
+    }
+
+});
+
+document.addEventListener("keyup", function (event) {
+    let input = String(event.key)
+    let removedItemIndex = inputKeysArray.indexOf(input);
+    if (removedItemIndex != -1) {
+        inputKeysArray.splice(removedItemIndex, 1)
+    }
+    return inputKeysArray
 })
+
+function doInput() {
+    console.log(inputKeysArray)
+        let playerVX = player.velocity.x
+        let playerVY = player.velocity.y
+        switch (inputKeysArray) {
+            case inputKeysArray.includes('w'):
+                Matter.Body.setVelocity(player, vector(playerVX, -10));
+                player.render.sprite.xScale = -5;
+                console.log("w :3")
+                break;
+            case inputKeysArray.includes('a'):
+                Matter.Body.setVelocity(player, vector(5, playerVY));
+                player.render.sprite.yScale = -5;
+                break;
+            case inputKeysArray.includes('d'):
+                Matter.Body.setVelocity(player, vector(-5, playerVY));
+                player.render.sprite.yScale = 5;
+                player.render.sprite.xScale = 5;
+                console.log(player)
+                break;
+        }
+
+}
+
+setInterval(doInput, 100)
