@@ -20,7 +20,7 @@ body {
 
 .text-draw {
     font-size: 3.5rem;
-    stroke: white;
+    stroke: #6C9BD9;
     fill: none;
     stroke-width: 1;
     stroke-dasharray: 370;
@@ -36,7 +36,7 @@ body {
 
 a {
     text-decoration: none;
-    color: white;
+    color: #6C9BD9;
     margin-top: 50px;
     font-size: 2rem;
 }
