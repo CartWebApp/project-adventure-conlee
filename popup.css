@@ -1,0 +1,22 @@
+.popup {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-top: 700px;
+    font-size: 2rem;
+    background-color: #709CAA;
+    padding: 2%;
+    width: 70vw;
+    border-radius: 2rem;
+}
+
+.bottom {
+    display: flex;
+    flex-direction: column;
+    margin-left: 50px;
+}
+
+button {
+    width: 6vw;
+    margin-left: 90px;
+}
