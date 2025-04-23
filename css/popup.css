@@ -20,5 +20,21 @@ body {
     border: 1px solid;
     margin-left: 70%;
     font-size: 1.5rem;
-    
+    background-color: #BFBFBF;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button {
+    border: 1px solid;
+    height: 3vh;
+    width: 3vw;
+    margin-top: 50px;
+    margin-left: 400px;
+}
+
+p{
+    margin-top: 10px;
 }
