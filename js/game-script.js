@@ -27,10 +27,10 @@ var config = {
 var game = new Phaser.Game(config);
 
 function preload() {
-    this.load.image("background", "background-ig.png")
-    this.load.image("floor", "floor-ig.png")
-    this.load.image("guy", "guy-standingT.png")
-    this.load.image("button", "button-ig.png")
+    this.load.image("background", "../media/background-ig.png")
+    this.load.image("floor", "../media/floor-ig.png")
+    this.load.image("guy", "../media/guy-standingT.png")
+    this.load.image("button", "../media/button-ig.png")
 
 }
 
