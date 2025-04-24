@@ -31,10 +31,11 @@ body {
     border: 1px solid;
     height: 3vh;
     width: 3vw;
-    margin-top: 50px;
+    margin-top: 20px;
     margin-left: 400px;
 }
 
 p{
     margin-top: 10px;
+    width: 20vw;
 }
