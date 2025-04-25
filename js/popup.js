@@ -12,14 +12,20 @@ window.onresize = backgroundFullscreen;
 const invisibleButton = document.getElementById('invisiblebtn');
 const outputDiv = document.getElementById('output');
 
-// Make the button invisible
+
 invisibleButton.style.backgroundColor = 'transparent';
 invisibleButton.style.border = 'none';
-invisibleButton.style.color = 'transparent'; // If the button has text
-invisibleButton.style.cursor = 'pointer'; // Good for indicating interactivity
-invisibleButton.style.position = 'absolute'; // Or 'fixed' depending on your layout
-invisibleButton.style.left = '1345px'; // Adjust the value as needed
+invisibleButton.style.color = 'transparent';
+invisibleButton.style.cursor = 'pointer'; 
+invisibleButton.style.position = 'absolute'; 
+invisibleButton.style.left = '1345px'; 
 invisibleButton.style.top = '680px'
 
+
+
+
+    document.getElementById('invisiblebtn').addEventListener('click', function() {
+        document.getElementById('popupText').textContent = 'That was delicious, you still have one more thing to eat, the fortune cookie, do you want to eat it?'
+    })
 
 

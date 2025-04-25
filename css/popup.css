@@ -14,12 +14,12 @@ body {
     image-rendering: pixelated;
 }
 
-.popup {
-    height: 15vh;
+#popup {
+    height: 18vh;
     width: 25vw;
     border: 1px solid;
     margin-left: 70%;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     background-color: #BFBFBF;
 
     display: flex;
@@ -27,13 +27,7 @@ body {
     align-items: center;
 }
 
-.button {
-    border: 1px solid;
-    height: 3vh;
-    width: 3vw;
-    margin-top: 20px;
-    margin-left: 400px;
-}
+
 
 p{
     margin-top: 10px;
