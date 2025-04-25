@@ -7,6 +7,7 @@
 
 body {
     height: 100vh;
+    background-color: black;
     background-image: url('/media/basement.png');
     background-size: 100%;
     background-position:  center;
@@ -15,7 +16,7 @@ body {
 }
 
 #popup {
-    height: 18vh;
+    height: 15.2vh;
     width: 25vw;
     border: 1px solid;
     margin-left: 70%;
@@ -34,6 +35,23 @@ p{
     width: 20vw;
 }
 
-.invisibleBtn{
+/* .invisibleBtn{
     margin-left: 40px;
-}
+} */
+  #invisiblebtn {
+        border: none; /* No border by default */
+        background: none; /* Remove background */
+        color: transparent; /* Make the text invisible */
+        outline: none; /* Remove the outline */
+        cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+    }
+
+    /* Style for when the button is focused */
+    #invisiblebtn:focus {
+        outline: none; /* Remove the outline when focused */
+    }
+
+    /* Optionally, you can add a border on hover to indicate it's clickable */
+    #invisiblebtn:hover {
+        border: 1px solid #ccc; /* Add a subtle border on hover */
+    }
