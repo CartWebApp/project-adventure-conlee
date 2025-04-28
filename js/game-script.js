@@ -21,7 +21,8 @@ var config = {
     },
     render: {
         pixelArt: true
-    }
+    },
+    fps: { target: 60, forceSetTimeOut: true }
 };
 
 var game = new Phaser.Game(config);
@@ -35,6 +36,8 @@ function preload() {
     this.load.image("scientist", "../media/scientist-standing-new.png")
     this.load.image('basement', '../media/basement.png');
     this.load.image('basement-floor', '../media/floor-basement.png')
+    this.load.image("alert", "../media/Alert!.png")
+
 }
 // =====================================================================
 
@@ -59,7 +62,9 @@ function create() {
     this.physics.add.collider(this.scientist, ground)
     this.physics.add.overlap(this.player, this.scientistTalkTrigger, onScientistTalkTriggerOverlap, null, this);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
-    
+    this.alert = this.physics.add.sprite(this.scientist.x, this.scientist.y + -50, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
+
+
     let overlapping = false;
 
     function onScientistTalkTriggerOverlap() {
@@ -112,6 +117,9 @@ function update() {
     this.scientistTalkTrigger.x = this.scientist.x;
     this.scientistTalkTrigger.y = this.scientist.y;
 
+    this.alert.x = this.scientist.x;
+    this.alert.y = this.scientist.y - 58;
+
     let cursors = this.input.keyboard.createCursorKeys();
 
     if (cursors.left.isDown) {
@@ -134,4 +142,18 @@ function update() {
         this.player.setVelocityY(-400);
     }
 
+    let playerToScientist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.scientist.x, this.scientist.y)
+
+    console.log("--------------------playerToScientist: " + playerToScientist + "--------------------");
+
+    if (playerToScientist < 50) {
+        console.log("within range of scientist" + playerToScientist);
+        this.alert.setVisible(true);
+        if (cursors.down.isDown) {
+            console.log("PRESSSSSSSSSSSSSSSSSSSSSSSS")
+        }
+    } else {
+        console.log("not within range of scientist" + playerToScientist);
+        this.alert.setVisible(false);
+    }
 }
