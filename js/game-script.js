@@ -45,17 +45,17 @@ function preload() {
 function create() {
 
 
-    this.add.image(centerScreenW, centerScreenH, "basement").setScale(3, );
+    this.add.image(centerScreenW, centerScreenH, "basement").setScale(2.5);
 
 
 
 
     let ground = this.physics.add.staticGroup();
 
-    ground.create(500, 560, "basement-floor").setScale(6, 2).refreshBody();
+    ground.create(1120, 695, "basement-floor").setScale(3.5, 2).refreshBody();
     // ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
     // ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
-    this.player = this.physics.add.sprite(200, 400, "guy").setScale(2).setBounce(0.2).setCollideWorldBounds(true);
+    this.player = this.physics.add.sprite(700, 400, "guy").setScale(2).setBounce(0).setCollideWorldBounds(true);
     this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
     this.scientistTalkTrigger = this.physics.add.sprite(100, 100, null).setScale(3, 2).setBounce(0.2).setCollideWorldBounds(true).setDrag(0, 999).setGravityY(0).setVisible(false);
     this.physics.add.collider(this.player, ground, onScientistTalkTriggerExit, null, this);
