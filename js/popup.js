@@ -1,21 +1,38 @@
-function backgroundFullscreen() {
-    document.body.style.height = `${window.innerHeight}px`;
+var config = {
+    type: Phaser.AUTO,
+    width: 2040,
+    height: 1000,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 },
+            debug: false
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+
+
+
+var game = new Phaser.Game(config);
+
+
+function preload() {
+    this.load.image('basement', '../media/basement.png');
 }
 
-window.onload = backgroundFullscreen;
 
-window.onresize = backgroundFullscreen;
+function create() {
+    this.add.image(600,500, 'basement');
+}
 
+function update() {
 
-
-
-const invisibleButton = document.getElementById('invisiblebtn');
-const outputDiv = document.getElementById('output');
-
-
-
-
-
+}
 
 
 

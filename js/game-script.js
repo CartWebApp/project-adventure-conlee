@@ -33,7 +33,7 @@ function preload() {
     this.load.image("guy", "../media/guy-standingT.png")
     this.load.image("button", "../media/button-ig.png")
     this.load.image("scientist", "../media/scientist-standing-new.png")
-
+    this.load.image('basement', '../media/basement.png');
 }
 // =====================================================================
 
@@ -94,6 +94,10 @@ function create() {
         this.scene.restart()
     });
 
+
+
+
+    // this.add.image(centerScreenW, centerScreenH, 'basement').setScale(6);
 }
 // =====================================================================
 
