@@ -49,7 +49,7 @@ function create() {
 
     let ground = this.physics.add.staticGroup();
 
-    ground.create(400, 560, "basement-floor").setScale(6, 2).refreshBody();
+    ground.create(500, 560, "basement-floor").setScale(6, 2).refreshBody();
     // ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
     // ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
     this.player = this.physics.add.sprite(200, 400, "guy").setScale(2).setBounce(0.2).setCollideWorldBounds(true);
