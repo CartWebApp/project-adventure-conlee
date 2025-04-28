@@ -42,7 +42,7 @@ function preload() {
 function create() {
 
 
-    this.add.image(centerScreenW, centerScreenH, "basement").setScale(5.3, );
+    this.add.image(centerScreenW, centerScreenH, "basement").setScale(3, );
 
 
 
@@ -50,8 +50,8 @@ function create() {
     let ground = this.physics.add.staticGroup();
 
     ground.create(400, 560, "basement-floor").setScale(6, 2).refreshBody();
-    ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
-    ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
+    // ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
+    // ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
     this.player = this.physics.add.sprite(200, 400, "guy").setScale(2).setBounce(0.2).setCollideWorldBounds(true);
     this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
     this.scientistTalkTrigger = this.physics.add.sprite(100, 100, null).setScale(3, 2).setBounce(0.2).setCollideWorldBounds(true).setDrag(0, 999).setGravityY(0).setVisible(false);
@@ -84,16 +84,16 @@ function create() {
     //     setXY: { x: 12, y: 0, stepX: 70 }
     // });
 
-    this.physics.add.collider(testt, ground);
-    this.physics.add.overlap(this.player, testt, collectStar, null, this);
+    // this.physics.add.collider(testt, ground);
+    // this.physics.add.overlap(this.player, testt, collectStar, null, this);
 
-    testt.children.iterate(function (child) {
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-    });
+    // testt.children.iterate(function (child) {
+    //     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    // });
 
-    function collectStar(player, star) {
-        star.disableBody(true, true);
-    }
+    // function collectStar(player, star) {
+    //     star.disableBody(true, true);
+    // }
 
     let buttonReset = this.add.image(100, 100, "button").setScale(3, 4).setInteractive();
     buttonReset.on('pointerdown', () => {
