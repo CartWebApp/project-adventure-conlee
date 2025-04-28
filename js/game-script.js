@@ -34,17 +34,23 @@ function preload() {
     this.load.image("button", "../media/button-ig.png")
     this.load.image("scientist", "../media/scientist-standing-new.png")
     this.load.image('basement', '../media/basement.png');
+    this.load.image('basement-floor', '../media/floor-basement.png')
 }
 // =====================================================================
 
 // =====================================================================
 function create() {
-    this.add.image(centerScreenW, centerScreenH, "background").setScale(5.1, 3.4);
+
+
+    this.add.image(centerScreenW, centerScreenH, "basement").setScale(5.3, );
+
+
+
 
     let ground = this.physics.add.staticGroup();
 
-    ground.create(400, 560, "floor").setScale(6, 2).refreshBody();
-    ground.create(600, 400, "floor").setScale(5, 2).refreshBody();
+    ground.create(400, 560, "basement-floor").setScale(6, 2).refreshBody();
+    ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
     ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
     this.player = this.physics.add.sprite(200, 400, "guy").setScale(2).setBounce(0.2).setCollideWorldBounds(true);
     this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
@@ -52,7 +58,8 @@ function create() {
     this.physics.add.collider(this.player, ground, onScientistTalkTriggerExit, null, this);
     this.physics.add.collider(this.scientist, ground)
     this.physics.add.overlap(this.player, this.scientistTalkTrigger, onScientistTalkTriggerOverlap, null, this);
-
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    
     let overlapping = false;
 
     function onScientistTalkTriggerOverlap() {
@@ -71,11 +78,11 @@ function create() {
         }
     }
 
-    let testt = this.physics.add.group({
-        key: 'floor',
-        repeat: 11,
-        setXY: { x: 12, y: 0, stepX: 70 }
-    });
+    // let testt = this.physics.add.group({
+    //     key: 'floor',
+    //     repeat: 11,
+    //     setXY: { x: 12, y: 0, stepX: 70 }
+    // });
 
     this.physics.add.collider(testt, ground);
     this.physics.add.overlap(this.player, testt, collectStar, null, this);
@@ -96,8 +103,6 @@ function create() {
 
 
 
-
-    // this.add.image(centerScreenW, centerScreenH, 'basement').setScale(6);
 }
 // =====================================================================
 
