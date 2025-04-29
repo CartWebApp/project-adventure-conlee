@@ -54,14 +54,14 @@ function create() {
 
 
     const box = this.add.graphics();
-box.fillStyle(0xffffff, 1);
-box.fillRoundedRect(280, 200, 300, 65, 5); // x, y, width, height, radius
+    box.fillStyle(0xffffff, 1);
+    box.fillRoundedRect(280, 200, 300, 65, 5); // x, y, width, height, radius
 
-const text = this.add.text(290, 210, 'Welcome to your room in the basement, go to the table and interact with your Chinese food', {
-    fontSize: '15px',
-    color: '#000',
-    wordWrap: { width: 290 } // set max width of the textbox
-});
+    const text = this.add.text(290, 210, 'Welcome to your room in the basement, go to the table and interact with your Chinese food', {
+        fontSize: '15px',
+        color: '#000',
+        wordWrap: { width: 290 } // set max width of the textbox
+    });
 
 
 
@@ -73,64 +73,65 @@ const text = this.add.text(290, 210, 'Welcome to your room in the basement, go t
     ground.create(249, 282, 'ground2').setScale(2.3).refreshBody();
     food.create(835, 403, 'food').setScale(2.5).refreshBody()
     let stairStartX = 445; // base X position (left side of slope)
-let stairStartY = 459; // base Y position (bottom of slope)
-let stepWidth = 0.5;
-let stepHeight = 0.5;
-let stepSpacing = 20;
-let stepCount = 17;
+    let stairStartY = 459; // base Y position (bottom of slope)
+    let stepWidth = 0.5;
+    let stepHeight = 0.5;
+    let stepSpacing = 20;
+    let stepCount = 17;
 
-for (let i = 0; i < stepCount; i++) {
-    let stepX = stairStartX - i * stepWidth * stepSpacing;   // moves RIGHT
-    let stepY = stairStartY - i * stepHeight * stepSpacing;  // moves UP
+    for (let i = 0; i < stepCount; i++) {
+        let stepX = stairStartX - i * stepWidth * stepSpacing;   // moves RIGHT
+        let stepY = stairStartY - i * stepHeight * stepSpacing;  // moves UP
 
-    let step = stairs.create(stepX, stepY, null);
-    step.setSize(stepWidth, stepHeight);
-    step.setVisible(false);
-    step.refreshBody();
-}
+        let step = stairs.create(stepX, stepY, null);
+        step.setSize(stepWidth, stepHeight);
+        step.setVisible(false);
+        step.refreshBody();
+    }
+
+
 
 
     
-
     // ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
     // ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
     this.player = this.physics.add.sprite(245, 182, "guy").setScale(2.1).setBounce(0).setCollideWorldBounds(true);
     this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
-    this.scientistTalkTrigger = this.physics.add.sprite(100, 100, null).setScale(3, 2).setBounce(0.2).setCollideWorldBounds(true).setDrag(0, 999).setGravityY(0).setVisible(false);
-    this.physics.add.collider(this.player, ground, onScientistTalkTriggerExit, null, this);
+    // this.scientistTalkTrigger = this.physics.add.sprite(100, 100, null).setScale(3, 2).setBounce(0.2).setCollideWorldBounds(true).setDrag(0, 999).setGravityY(0).setVisible(false);
+    this.physics.add.collider(this.player, ground);
     this.physics.add.collider(this.scientist, ground)
     this.physics.add.collider(this.player, stairs);
     this.physics.add.collider(this.player, food);
-    this.physics.add.overlap(this.player, this.scientistTalkTrigger, onScientistTalkTriggerOverlap, null, this);
+    // this.physics.add.overlap(this.player, this.scientistTalkTrigger, onScientistTalkTriggerOverlap, null, this);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(2);
     this.alert = this.physics.add.sprite(this.scientist.x, this.scientist.y + -50, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
-this.foodTextOptions = [
-    "Mmm... Chinese food smells amazing.",
-    "Looks like leftovers from yesterday.",
-    "You're not even sure what this is.",
-    "It's cold now... maybe microwave it?"
-];
-this.foodTextIndex = 0;
-this.playerNearFood = false;
+    this.foodTextOptions = [
+        "Mmm... Chinese food smells amazing.",
+        "Looks like leftovers from yesterday.",
+        "You're not even sure what this is.",
+        "It's cold now... maybe microwave it?"
+    ];
+    this.foodTextIndex = 0;
+    this.playerNearFood = false;
 
-    let overlapping = false;
+    // let overlapping = false;
 
-    function onScientistTalkTriggerOverlap() {
-        console.log("Player collided");
-        if (overlapping == false) {
-            overlapping = true;
-            console.log("Scientist overlapped");
-            return overlapping;
-        }
-    }
+    // function onScientistTalkTriggerOverlap() {
+    //     console.log("Player collided");
+    //     if (overlapping == false) {
+    //         overlapping = true;
+    //         console.log("Scientist overlapped");
+    //         return overlapping;
+    //     }
+    // }
 
-    function onScientistTalkTriggerExit() {
-        if (overlapping == true) {
-            console.log("Player exited");
-            overlapping = false;
-        }
-    }
+    // function onScientistTalkTriggerExit() {
+    //     if (overlapping == true) {
+    //         console.log("Player exited");
+    //         overlapping = false;
+    //     }
+    // }
 
 
     let buttonReset = this.add.image(100, 100, "button").setScale(3, 4).setInteractive();
@@ -139,7 +140,9 @@ this.playerNearFood = false;
         this.scene.restart()
     });
 
-  
+
+
+
 
 
 
@@ -151,8 +154,8 @@ this.playerNearFood = false;
 function update() {
 
 
-    this.scientistTalkTrigger.x = this.scientist.x;
-    this.scientistTalkTrigger.y = this.scientist.y;
+    // this.scientistTalkTrigger.x = this.scientist.x;
+    // this.scientistTalkTrigger.y = this.scientist.y;
 
     this.alert.x = this.scientist.x;
     this.alert.y = this.scientist.y - 58;
@@ -183,7 +186,7 @@ function update() {
 
     console.log("--------------------playerToScientist: " + playerToScientist + "--------------------");
 
-    if (playerToScientist < 50) {
+    if (playerToScientist < 70) {
         console.log("within range of scientist" + playerToScientist);
         this.alert.setVisible(true);
         if (cursors.down.isDown) {
@@ -194,7 +197,7 @@ function update() {
         this.alert.setVisible(false);
     }
 
-   
 
-    
+
+
 }
