@@ -29,23 +29,25 @@ var game = new Phaser.Game(config);
 
 // =====================================================================
 function preload() {
-    this.load.image("background", "../media/background-ig.png")
-    this.load.image("floor", "../media/floor-ig.png")
-    this.load.image("guy", "../media/guy-standingT.png")
-    this.load.image("button", "../media/button-ig.png")
-    this.load.image("scientist", "../media/scientist-standing-new.png")
+    this.load.image("background", "../media/background-ig.png");
+    this.load.image("floor", "../media/floor-ig.png");
+    this.load.image("guy", "../media/guy-standingT.png");
+    this.load.image("button", "../media/button-ig.png");
+    this.load.image("scientist", "../media/scientist-standing-new.png");
     this.load.image('basement', '../media/basement.png');
-    this.load.image('basement-floor', '../media/floor-basement.png')
-    this.load.image("alert", "../media/Alert!.png")
-    this.load.image('stairs', '../media/stairs.png')
-    this.load.image('ground2', '../media/new-line.png')
-    this.load.image('food', '../media/Chinese-food.png')
+    this.load.image('basement-floor', '../media/floor-basement.png');
+    this.load.image("alert", "../media/Alert!.png");
+    this.load.image('stairs', '../media/stairs.png');
+    this.load.image('ground2', '../media/new-line.png');
+    this.load.image('food', '../media/Chinese-food.png');
+    this.load.image('transparent', '../media/transparent-box.png');
 
 }
 // =====================================================================
 
 // =====================================================================
 function create() {
+
 
 
     this.add.image(centerScreenW, centerScreenH, "basement").setScale(2.5);
@@ -55,9 +57,9 @@ function create() {
 
     const box = this.add.graphics();
 box.fillStyle(0xffffff, 1);
-box.fillRoundedRect(280, 200, 300, 65, 5); // x, y, width, height, radius
+box.fillRoundedRect(650, 360, 300, 75, 3); // x, y, width, height, radius
 
-const text = this.add.text(290, 210, 'Welcome to your room in the basement, go to the table and interact with your Chinese food', {
+let text = this.add.text(662, 370, 'Welcome to your room in the basement, go to the table and interact with your Chinese food', {
     fontSize: '15px',
     color: '#000',
     wordWrap: { width: 290 } // set max width of the textbox
@@ -67,11 +69,15 @@ const text = this.add.text(290, 210, 'Welcome to your room in the basement, go t
 
     let ground = this.physics.add.staticGroup();
     let stairs = this.physics.add.staticGroup();
-    let food = this.physics.add.staticGroup();
+    let transparent = this.physics.add.staticGroup();
 
     ground.create(1070, 664, "basement-floor").setScale(3.2, 2).refreshBody();
     ground.create(593, 465, 'ground2').setScale(2.3).refreshBody();
-    food.create(835, 403, 'food').setScale(2.5).refreshBody()
+    let transparentBox = transparent.create(1180, 586, 'transparent').setScale(1.3).refreshBody();
+
+    transparentBox.setInteractive(false);
+
+
     let stairStartX = 790; // base X position (left side of slope)
 let stairStartY = 640; // base Y position (bottom of slope)
 let stepWidth = 0.5;
@@ -94,28 +100,19 @@ for (let i = 0; i < stepCount; i++) {
 
     // ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
     // ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
-    this.player = this.physics.add.sprite(595, 182, "guy").setScale(2.1).setBounce(0).setCollideWorldBounds(true);
+    this.player = this.physics.add.sprite(595, 182, "guy").setScale(2.2).setBounce(0).setCollideWorldBounds(true);
     this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
     this.scientistTalkTrigger = this.physics.add.sprite(100, 100, null).setScale(3, 2).setBounce(0.2).setCollideWorldBounds(true).setDrag(0, 999).setGravityY(0).setVisible(false);
     this.physics.add.collider(this.player, ground, onScientistTalkTriggerExit, null, this);
     this.physics.add.collider(this.scientist, ground)
     this.physics.add.collider(this.player, stairs);
-    this.physics.add.collider(this.player, food);
     this.physics.add.overlap(this.player, this.scientistTalkTrigger, onScientistTalkTriggerOverlap, null, this);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(2);
     this.alert = this.physics.add.sprite(this.scientist.x, this.scientist.y + -50, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
-this.foodTextOptions = [
-    "Mmm... Chinese food smells amazing.",
-    "Looks like leftovers from yesterday.",
-    "You're not even sure what this is.",
-    "It's cold now... maybe microwave it?"
-];
-this.foodTextIndex = 0;
-this.playerNearFood = false;
-
+    
     let overlapping = false;
-
+    
     function onScientistTalkTriggerOverlap() {
         console.log("Player collided");
         if (overlapping == false) {
@@ -124,31 +121,39 @@ this.playerNearFood = false;
             return overlapping;
         }
     }
-
+    
     function onScientistTalkTriggerExit() {
         if (overlapping == true) {
             console.log("Player exited");
             overlapping = false;
         }
     }
-
-
+    
+    
     let buttonReset = this.add.image(100, 100, "button").setScale(3, 4).setInteractive();
     buttonReset.on('pointerdown', () => {
         console.log("Button clicked!");
         this.scene.restart()
     });
-
   
-
-
-
 
 }
 // =====================================================================
 
 // =====================================================================
 function update() {
+    
+    let transparentBox = this.input.keyboard.createCursorKeys();
+
+    if (transparentBox.down.isDown) {
+        // Get the transparent box (first child of the 'transparent' group)
+            if (transparentBox.left.isDown) {
+                
+            }
+    }
+
+
+
 
 
     this.scientistTalkTrigger.x = this.scientist.x;
