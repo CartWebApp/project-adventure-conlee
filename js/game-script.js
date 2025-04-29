@@ -10,7 +10,7 @@ var config = {
         arcade: {
             gravity: { y: 500 },
             // overlapBias: 99,
-            debug: true
+            debug: false
         },
 
     },
@@ -57,12 +57,12 @@ function create() {
 
     const box = this.add.graphics();
     box.fillStyle(0xffffff, 1);
-    box.fillRoundedRect(650, 360, 300, 75, 3); // x, y, width, height, radius
+    box.fillRoundedRect(650, 360, 300, 75, 3);
 
     let text = this.add.text(662, 370, 'Welcome to your room in the basement, go to the table and interact with your Chinese food', {
         fontSize: '15px',
         color: '#000',
-        wordWrap: { width: 290 } // set max width of the textbox
+        wordWrap: { width: 290 }
     });
 
 
@@ -78,8 +78,8 @@ function create() {
     transparentBox.setInteractive(false);
 
 
-    let stairStartX = 800; // base X position (left side of slope)
-    let stairStartY = 650; // base Y position (bottom of slope)
+    let stairStartX = 800;
+    let stairStartY = 650;
     let stepWidth = 0.5;
     let stepHeight = 0.5;
     let stepSpacing = 20;
@@ -99,43 +99,18 @@ function create() {
 
 
 
-    // ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
-    // ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
+
     this.player = this.physics.add.sprite(595, 182, "guy").setScale(2.2).setBounce(0).setCollideWorldBounds(true);
     this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
-    // this.scientistTalkTrigger = this.physics.add.sprite(100, 100, null).setScale(3, 2).setBounce(0.2).setCollideWorldBounds(true).setDrag(0, 999).setGravityY(0).setVisible(false);
+
     this.physics.add.collider(this.player, ground);
     this.physics.add.collider(this.scientist, ground)
     this.physics.add.collider(this.player, stairs);
-    // this.physics.add.overlap(this.player, this.scientistTalkTrigger, onScientistTalkTriggerOverlap, null, this);
+
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(2);
     this.alert = this.physics.add.sprite(this.scientist.x, this.scientist.y + -50, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
 
-    // let overlapping = false;
-
-    // function onScientistTalkTriggerOverlap() {
-    //     console.log("Player collided");
-    //     if (overlapping == false) {
-    //         overlapping = true;
-    //         console.log("Scientist overlapped");
-    //         return overlapping;
-    //     }
-    // }
-
-    // function onScientistTalkTriggerExit() {
-    //     if (overlapping == true) {
-    //         console.log("Player exited");
-    //         overlapping = false;
-    //     }
-    // }
-
-
-    // let buttonReset = this.add.image(100, 100, "button").setScale(3, 4).setInteractive();
-    // buttonReset.on('pointerdown', () => {
-    //     console.log("Button clicked!");
-    //     this.scene.restart()
-    // });
 
 
 
