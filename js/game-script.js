@@ -10,7 +10,7 @@ var config = {
         arcade: {
             gravity: { y: 500 },
             // overlapBias: 99,
-            debug: false
+            debug: true
         },
 
     },
@@ -39,6 +39,7 @@ function preload() {
     this.load.image("alert", "../media/Alert!.png")
     this.load.image('stairs', '../media/stairs.png')
     this.load.image('ground2', '../media/new-line.png')
+    this.load.image('food', '../media/Chinese-food.png')
 
 }
 // =====================================================================
@@ -50,15 +51,25 @@ function create() {
     this.add.image(centerScreenW, centerScreenH, "basement").setScale(2.5);
 
 
+    const box = this.add.graphics();
+box.fillStyle(0xffffff, 1);
+box.fillRoundedRect(280, 200, 300, 65, 5); // x, y, width, height, radius
+
+const text = this.add.text(290, 210, 'Welcome to your room in the basement, go to the table and interact with your Chinese food', {
+    fontSize: '15px',
+    color: '#000',
+    wordWrap: { width: 290 } // set max width of the textbox
+});
+
 
 
     let ground = this.physics.add.staticGroup();
     let stairs = this.physics.add.staticGroup();
-
+    let food = this.physics.add.staticGroup();
 
     ground.create(685, 481, "basement-floor").setScale(3.5, 2).refreshBody();
     ground.create(249, 282, 'ground2').setScale(2.3).refreshBody();
-    
+    food.create(835, 403, 'food').setScale(2.5).refreshBody()
     let stairStartX = 445; // base X position (left side of slope)
 let stairStartY = 459; // base Y position (bottom of slope)
 let stepWidth = 0.5;
@@ -81,12 +92,13 @@ for (let i = 0; i < stepCount; i++) {
 
     // ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
     // ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
-    this.player = this.physics.add.sprite(245, 182, "guy").setScale(2).setBounce(0).setCollideWorldBounds(true);
+    this.player = this.physics.add.sprite(245, 182, "guy").setScale(2.1).setBounce(0).setCollideWorldBounds(true);
     this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
     this.scientistTalkTrigger = this.physics.add.sprite(100, 100, null).setScale(3, 2).setBounce(0.2).setCollideWorldBounds(true).setDrag(0, 999).setGravityY(0).setVisible(false);
     this.physics.add.collider(this.player, ground, onScientistTalkTriggerExit, null, this);
     this.physics.add.collider(this.scientist, ground)
     this.physics.add.collider(this.player, stairs);
+    this.physics.add.collider(this.player, food);
     this.physics.add.overlap(this.player, this.scientistTalkTrigger, onScientistTalkTriggerOverlap, null, this);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(2);
@@ -134,6 +146,9 @@ for (let i = 0; i < stepCount; i++) {
         this.scene.restart()
     });
 
+  
+
+
 
 
 }
@@ -141,6 +156,7 @@ for (let i = 0; i < stepCount; i++) {
 
 // =====================================================================
 function update() {
+
 
     this.scientistTalkTrigger.x = this.scientist.x;
     this.scientistTalkTrigger.y = this.scientist.y;
@@ -184,4 +200,8 @@ function update() {
         console.log("not within range of scientist" + playerToScientist);
         this.alert.setVisible(false);
     }
+
+   
+
+    
 }
