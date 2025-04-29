@@ -50,6 +50,8 @@ function create() {
 
     this.add.image(centerScreenW, centerScreenH, "basement").setScale(2.5);
 
+    this.cursors = this.input.keyboard.createCursorKeys();
+
 
     const box = this.add.graphics();
 box.fillStyle(0xffffff, 1);
@@ -103,7 +105,14 @@ for (let i = 0; i < stepCount; i++) {
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(2);
     this.alert = this.physics.add.sprite(this.scientist.x, this.scientist.y + -50, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
-
+this.foodTextOptions = [
+    "Mmm... Chinese food smells amazing.",
+    "Looks like leftovers from yesterday.",
+    "You're not even sure what this is.",
+    "It's cold now... maybe microwave it?"
+];
+this.foodTextIndex = 0;
+this.playerNearFood = false;
 
     let overlapping = false;
 
@@ -123,22 +132,6 @@ for (let i = 0; i < stepCount; i++) {
         }
     }
 
-    // let testt = this.physics.add.group({
-    //     key: 'floor',
-    //     repeat: 11,
-    //     setXY: { x: 12, y: 0, stepX: 70 }
-    // });
-
-    // this.physics.add.collider(testt, ground);
-    // this.physics.add.overlap(this.player, testt, collectStar, null, this);
-
-    // testt.children.iterate(function (child) {
-    //     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-    // });
-
-    // function collectStar(player, star) {
-    //     star.disableBody(true, true);
-    // }
 
     let buttonReset = this.add.image(100, 100, "button").setScale(3, 4).setInteractive();
     buttonReset.on('pointerdown', () => {
