@@ -10,7 +10,7 @@ var config = {
         arcade: {
             gravity: { y: 500 },
             // overlapBias: 99,
-            debug: true
+            debug: false
         },
 
     },
@@ -37,6 +37,8 @@ function preload() {
     this.load.image('basement', '../media/basement.png');
     this.load.image('basement-floor', '../media/floor-basement.png')
     this.load.image("alert", "../media/Alert!.png")
+    this.load.image('stairs', '../media/stairs.png')
+    this.load.image('ground2', '../media/new-line.png')
 
 }
 // =====================================================================
@@ -51,17 +53,43 @@ function create() {
 
 
     let ground = this.physics.add.staticGroup();
+    let stairs = this.physics.add.staticGroup();
 
-    ground.create(1120, 695, "basement-floor").setScale(3.5, 2).refreshBody();
+
+    ground.create(685, 481, "basement-floor").setScale(3.5, 2).refreshBody();
+    ground.create(249, 282, 'ground2').setScale(2.3).refreshBody();
+    
+    let stairStartX = 445; // base X position (left side of slope)
+let stairStartY = 459; // base Y position (bottom of slope)
+let stepWidth = 0.5;
+let stepHeight = 0.5;
+let stepSpacing = 20;
+let stepCount = 17;
+
+for (let i = 0; i < stepCount; i++) {
+    let stepX = stairStartX - i * stepWidth * stepSpacing;   // moves RIGHT
+    let stepY = stairStartY - i * stepHeight * stepSpacing;  // moves UP
+
+    let step = stairs.create(stepX, stepY, null);
+    step.setSize(stepWidth, stepHeight);
+    step.setVisible(false);
+    step.refreshBody();
+}
+
+
+    
+
     // ground.create(600, 400, "basement-floor").setScale(5, 2).refreshBody();
     // ground.create(100, visualViewport.height, "floor").setScale(20, 2).refreshBody();
-    this.player = this.physics.add.sprite(700, 400, "guy").setScale(2).setBounce(0).setCollideWorldBounds(true);
+    this.player = this.physics.add.sprite(245, 182, "guy").setScale(2).setBounce(0).setCollideWorldBounds(true);
     this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
     this.scientistTalkTrigger = this.physics.add.sprite(100, 100, null).setScale(3, 2).setBounce(0.2).setCollideWorldBounds(true).setDrag(0, 999).setGravityY(0).setVisible(false);
     this.physics.add.collider(this.player, ground, onScientistTalkTriggerExit, null, this);
     this.physics.add.collider(this.scientist, ground)
+    this.physics.add.collider(this.player, stairs);
     this.physics.add.overlap(this.player, this.scientistTalkTrigger, onScientistTalkTriggerOverlap, null, this);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    this.cameras.main.setZoom(2);
     this.alert = this.physics.add.sprite(this.scientist.x, this.scientist.y + -50, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
 
 
