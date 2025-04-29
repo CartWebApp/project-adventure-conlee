@@ -78,12 +78,22 @@ function create() {
     transparentBox.setInteractive(false);
 
 
-    let stairStartX = 790; // base X position (left side of slope)
-    let stairStartY = 640; // base Y position (bottom of slope)
+    let stairStartX = 800; // base X position (left side of slope)
+    let stairStartY = 650; // base Y position (bottom of slope)
     let stepWidth = 0.5;
     let stepHeight = 0.5;
     let stepSpacing = 20;
-    let stepCount = 17;
+    let stepCount = 18;
+
+    for (let i = 0; i < stepCount; i++) {
+        let stepX = stairStartX - i * stepWidth * stepSpacing;   // moves RIGHT
+        let stepY = stairStartY - i * stepHeight * stepSpacing;  // moves UP
+
+        let step = stairs.create(stepX, stepY, null);
+        step.setSize(stepWidth, stepHeight);
+        step.setVisible(false);
+        step.refreshBody();
+    }
 
 
 
