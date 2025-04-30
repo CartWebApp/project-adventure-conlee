@@ -54,7 +54,6 @@ function create() {
 
     this.cursors = this.input.keyboard.createCursorKeys();
 
-
     const box = this.add.graphics();
     box.fillStyle(0xffffff, 1);
     box.fillRoundedRect(650, 360, 300, 75, 3);
@@ -64,8 +63,6 @@ function create() {
         color: '#000',
         wordWrap: { width: 290 }
     });
-
-
 
     let ground = this.physics.add.staticGroup();
     let stairs = this.physics.add.staticGroup();
@@ -95,11 +92,6 @@ function create() {
         step.refreshBody();
     }
 
-
-
-
-
-
     this.player = this.physics.add.sprite(595, 182, "guy").setScale(2.2).setBounce(0).setCollideWorldBounds(true);
     this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
 
@@ -110,12 +102,6 @@ function create() {
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(2);
     this.alert = this.physics.add.sprite(this.scientist.x, this.scientist.y + -50, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
-
-
-
-
-
-
 
 }
 // =====================================================================
@@ -131,13 +117,6 @@ function update() {
 
         }
     }
-
-
-
-
-
-    // this.scientistTalkTrigger.x = this.scientist.x;
-    // this.scientistTalkTrigger.y = this.scientist.y;
 
     this.alert.x = this.scientist.x;
     this.alert.y = this.scientist.y - 58;
@@ -178,8 +157,5 @@ function update() {
         console.log("not within range of scientist" + playerToScientist);
         this.alert.setVisible(false);
     }
-
-
-
-
+    
 }
