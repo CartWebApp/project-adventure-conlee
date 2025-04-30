@@ -47,3 +47,22 @@ a {
     display: flex;
     flex-direction: row;
 }  
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: black;
+    color: white;
+    text-align: left;
+    padding: 10px 0;
+}
+
+p {
+    text-decoration: none;
+    color: #6C9BD9;
+    margin-top: 0.25rem;
+    font-size: 0.25rem;
+}
+
