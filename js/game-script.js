@@ -10,7 +10,7 @@ var config = {
         arcade: {
             gravity: { y: 500 },
             // overlapBias: 99,
-            debug: false
+            debug: true
         },
 
     },
@@ -58,7 +58,7 @@ function create() {
     this.cursors = this.input.keyboard.createCursorKeys();
     cursors = this.cursors; // make cursors available globally
 
-    this.player = this.physics.add.sprite(450, 450, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false);
+    this.player = this.physics.add.sprite(750, 450, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false);
     let stairs = this.physics.add.staticGroup();
     this.chineseFood = this.physics.add.sprite(590, 600, "alert").setScale(2.5).setVisible(false).setGravityY(0).setDrag(0, 999); //chinese food alert
     this.alert = this.physics.add.sprite(this.chineseFood.x, this.chineseFood.y + -30, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
@@ -70,10 +70,10 @@ function create() {
         return collider;
     }
 
-    collider(this.player, this, 100, 665, 100, 0.1)
-    collider(this.player, this, 100, 350, 10, 0.1) //ceiling
-    collider(this.player, this, 550, 420, 21, 0.1) //ceiling lower
-    collider(this.player, this, 890, 500, 0.1, 10) //right wall
+    collider(this.player, this, 500, 665, 100, 0.1)
+    collider(this.player, this, 580, 355, 10, 0.1) //ceiling
+    collider(this.player, this, 1150, 420, 21, 0.1) //ceiling lower
+    collider(this.player, this, 1473, 500, 0.1, 10) //right wall
     collider(this.player, this, -10, 500, 0.1, 10) //left wall
 
 
@@ -87,8 +87,8 @@ function create() {
     // graphics.fillStyle(0x000000, 0.5); 
     // graphics.fillRect(x, y, width, height);
 
-    let stairStartX = 245;  //stairs
-    let stairStartY = 666;
+    let stairStartX = 825;  //stairs
+    let stairStartY = 668;
     let stepWidth = 0.645;
     let stepHeight = 0.626;
     let stepSpacing = 20;
