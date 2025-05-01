@@ -27,7 +27,10 @@ var config = {
 
 var game = new Phaser.Game(config);
 
-
+let keyW
+let keyA
+let keyS
+let keyD
 
 // =====================================================================
 function preload() {
@@ -41,7 +44,10 @@ function preload() {
 
 // =====================================================================
 function create() {
-    
+    keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     this.add.image(0, 0, "basement").setScale(2.5);
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -98,13 +104,13 @@ function create() {
 // =====================================================================
 function update() {
 
-    if (cursors.left.isDown) {
+    if (cursors.left.isDown || keyA.isDown) {
         this.player.setVelocityX(-160);
         this.player.scaleX = -2.2
         this.player.body.setOffset(20, 0)
     }
 
-    else if (cursors.right.isDown) {
+    else if (cursors.right.isDown || keyD.isDown) {
         this.player.setVelocityX(160);
         this.player.scaleX = 2.2
         this.player.body.setOffset(0, 0)
@@ -114,7 +120,7 @@ function update() {
         this.player.setVelocityX(0);
     }
 
-    if (cursors.up.isDown && this.player.body.touching.down) {
+    if (cursors.up.isDown && this.player.body.touching.down || keyW.isDown && this.player.body.touching.down) {
         this.player.setVelocityY(-250);
     }
 
@@ -126,7 +132,7 @@ function update() {
     if (playerToChineseFood < 70) {
         console.log("within range of interactible" + playerToChineseFood);
         this.alert.setVisible(true);
-        if (cursors.down.isDown) {
+        if (cursors.down.isDown || keyS.isDown) {
             console.log("PRESSSSSSSSSSSSSSSSSSSSSSSS")
         }
     } else {
