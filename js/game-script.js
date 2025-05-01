@@ -37,30 +37,19 @@ function preload() {
 }
 // =====================================================================
 
-function createCollider(scene, x, y, width, height) {
-    const collider = scene.physics.add.staticSprite(x, y, "transparent");
-    collider.setScale(width, height).refreshBody().setVisible(false);
-    return collider;
-}
-
-// Example usage in your scene's create method:
-this.physics.add.collider(
-    this.player,
-    createCollider(this, 100, 665, 100, 0.1) // floor
-);
-
 
 
 // =====================================================================
 function create() {
+    
 
-    this.add.image(centerScreenW, centerScreenH, "basement").setScale(2.5);
+    this.add.image(0, 0, "basement").setScale(2.5);
     this.cursors = this.input.keyboard.createCursorKeys();
     cursors = this.cursors; // make cursors available globally
 
-    this.player = this.physics.add.sprite(450, 450, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false);
+    this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false);
     let stairs = this.physics.add.staticGroup();
-    this.chineseFood = this.physics.add.sprite(590, 600, "alert").setScale(2.5).setVisible(false).setGravityY(0).setDrag(0, 999); //chinese food alert
+    this.chineseFood = this.physics.add.sprite(150, 80, "alert").setScale(2.5).setVisible(false).setGravityY(0).setDrag(0, 999); //chinese food alert
     this.alert = this.physics.add.sprite(this.chineseFood.x, this.chineseFood.y + -30, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
 
     function collider(object, scene, x, y, width, height) {
@@ -70,26 +59,22 @@ function create() {
         return collider;
     }
 
-    collider(this.player, this, 100, 665, 100, 0.1)
-    collider(this.player, this, 100, 350, 10, 0.1) //ceiling
-    collider(this.player, this, 550, 420, 21, 0.1) //ceiling lower
-    collider(this.player, this, 890, 500, 0.1, 10) //right wall
-    collider(this.player, this, -10, 500, 0.1, 10) //left wall
+    collider(this.player, this, 0, 157, 100, 0.1) //floor
+    collider(this.player, this, -300, -155, 10, 0.1) //ceiling
+    collider(this.player, this, 110, -85, 21, 0.1) //ceiling lower
+    collider(this.player, this, 450, 0, 0.1, 10) //right wall
+    collider(this.player, this, -450, 0, 0.1, 10) //left wall
 
 
-    collider(this.player, this, 0, 470, 2, 0.5)
+    collider(this.player, this, -430, -36, 2, 0.5) //stair top landing
     this.physics.add.collider(this.player, stairs);
 
-    this.cameras.main.startFollow(this.player, true, 0.1, 0.1); //camera
+    this.cameras.main.startFollow(this.player, true, 1, 1); //camera
     this.cameras.main.setZoom(1);
 
-    // let graphics = this.add.graphics(1);
-    // graphics.fillStyle(0x000000, 0.5); 
-    // graphics.fillRect(x, y, width, height);
-
-    let stairStartX = 245;  //stairs
-    let stairStartY = 666;
-    let stepWidth = 0.645;
+    let stairStartX = -196;  //stairs
+    let stairStartY = 159;
+    let stepWidth = 0.63;
     let stepHeight = 0.626;
     let stepSpacing = 20;
     let stepCount = 16;
@@ -139,13 +124,13 @@ function update() {
     console.log("--------------------playerToChineseFood: " + playerToChineseFood + "--------------------");
 
     if (playerToChineseFood < 70) {
-        console.log("within range of scientist" + playerToChineseFood);
+        console.log("within range of interactible" + playerToChineseFood);
         this.alert.setVisible(true);
         if (cursors.down.isDown) {
             console.log("PRESSSSSSSSSSSSSSSSSSSSSSSS")
         }
     } else {
-        console.log("not within range of scientist" + playerToChineseFood);
+        console.log("not within range of interactible" + playerToChineseFood);
         this.alert.setVisible(false);
     }
 

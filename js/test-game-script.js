@@ -58,7 +58,7 @@ function create() {
     box.fillStyle(0xffffff, 1);
     box.fillRoundedRect(650, 360, 300, 75, 3);
 
-    let text = this.add.text(662, 370, 'Welcome to your room in the basement, go to the table and interact with your Chinese food', {
+    let text = this.add.text(662, 370, 'buh', {
         fontSize: '15px',
         color: '#000',
         wordWrap: { width: 290 }
@@ -93,7 +93,7 @@ function create() {
     }
 
     this.player = this.physics.add.sprite(595, 182, "guy").setScale(2.2).setBounce(0).setCollideWorldBounds(true);
-    this.scientist = this.physics.add.sprite(300, 400, "scientist").setScale(2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
+    this.scientist = this.physics.add.sprite(400, 182, "scientist").setScale(2.2).setBounce(0.2).setCollideWorldBounds(true).setDrag(100, 0);
 
     this.physics.add.collider(this.player, ground);
     this.physics.add.collider(this.scientist, ground)
@@ -102,7 +102,7 @@ function create() {
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(2);
     this.alert = this.physics.add.sprite(this.scientist.x, this.scientist.y + -50, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
-
+    this.cameras.main.setBackgroundColor("#d5d5d5")
 }
 // =====================================================================
 
@@ -119,19 +119,19 @@ function update() {
     }
 
     this.alert.x = this.scientist.x;
-    this.alert.y = this.scientist.y - 58;
+    this.alert.y = this.scientist.y - 64;
 
     let cursors = this.input.keyboard.createCursorKeys();
 
     if (cursors.left.isDown) {
         this.player.setVelocityX(-160);
-        this.player.scaleX = -2
+        this.player.scaleX = -2.2
         this.player.body.setOffset(20, 0)
     }
 
     else if (cursors.right.isDown) {
         this.player.setVelocityX(160);
-        this.player.scaleX = 2
+        this.player.scaleX = 2.2
         this.player.body.setOffset(0, 0)
     }
 
@@ -152,6 +152,7 @@ function update() {
         this.alert.setVisible(true);
         if (cursors.down.isDown) {
             console.log("PRESSSSSSSSSSSSSSSSSSSSSSSS")
+            // text.setText("buhhhhh")
         }
     } else {
         console.log("not within range of scientist" + playerToScientist);
