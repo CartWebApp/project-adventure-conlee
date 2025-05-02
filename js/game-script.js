@@ -37,6 +37,7 @@ function preload() {
     this.load.image("basement", "../media/basement.png");
     this.load.image("player", "../media/guy-standingT.png");
     this.load.image("alert", "../media/Alert!.png");
+    this.load.image("lab", "../media/inside-labratory.png");
 }
 // =====================================================================
 
@@ -50,6 +51,7 @@ function create() {
     keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     this.add.image(0, 0, "basement").setScale(2.5);
+    this.add.image(2000, 43, "lab").setScale(2.5);
     this.cursors = this.input.keyboard.createCursorKeys();
     cursors = this.cursors; // make cursors available globally
 
@@ -65,7 +67,7 @@ function create() {
         return collider;
     }
 
-    collider(this.player, this, 0, 157, 100, 0.1) //floor
+    collider(this.player, this, 0, 157, 500, 0.1) //floor
     collider(this.player, this, -300, -155, 10, 0.1) //ceiling
     collider(this.player, this, 110, -85, 21, 0.1) //ceiling lower
     collider(this.player, this, 450, 0, 0.1, 10) //right wall
@@ -77,6 +79,8 @@ function create() {
 
     this.cameras.main.startFollow(this.player, true, 1, 1); //camera
     this.cameras.main.setZoom(1);
+    this.cameras.main.setLerp(0.01, 0.1); // Adjust the values for smoother or faster movement
+
 
     let stairStartX = -196;  //stairs
     let stairStartY = 159;
@@ -124,19 +128,56 @@ function update() {
         this.player.setVelocityY(-250);
     }
 
+    if (this.alerts == false || this.alerts == undefined) {
+        this.alerts = {};
+    }
+
+    function playerNearAlert(player, scene, x, y, funct) {
+        const alertLocation = `${x},${y}`; // Unique key for each alert based on its position
+
+        // Create the alert sprite only if it doesn't already exist
+        if (scene.alerts[alertLocation] == false || scene.alerts[alertLocation] == undefined) {
+            const alert = scene.add.sprite(x, y, 'alert');
+            alert.setScale(4).setDepth(1).setVisible(false);
+            scene.alerts[alertLocation] = alert;
+        }
+        const alert = scene.alerts[alertLocation]; // Get the existing alert sprite
+        const playerToTargetLocation = Phaser.Math.Distance.Between(player.x, player.y, x, y);
+
+        if (playerToTargetLocation < 70) {
+            console.log("within range of interactible " + playerToTargetLocation);
+            alert.setVisible(true);
+            if (cursors.down.isDown || keyS.isDown) {
+                console.log("Press Detect! " + playerToTargetLocation);
+                funct();
+            }
+        } else {
+            console.log("not within range of interactible lkuhfalkdsjhflakjdshf " + playerToTargetLocation);
+            alert.setVisible(false);
+        }
+    }
+
+    playerNearAlert(this.player, this, -430, -100, () => {
+        console.log("Interacted with target location!"); 
+        this.player.x = 2100
+        this.player.y = 0
+    });
+
+    
+
     // checks range
     let playerTotargetLocation = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.targetLocation.x, this.targetLocation.y)
 
-    console.log("--------------------playerTotargetLocation: " + playerTotargetLocation + "--------------------");
+    // console.log("--------------------playerTotargetLocation: " + playerTotargetLocation + "--------------------");
 
     if (playerTotargetLocation < 70) {
-        console.log("within range of interactible" + playerTotargetLocation);
+        // console.log("within range of interactible" + playerTotargetLocation);
         this.alert.setVisible(true);
         if (cursors.down.isDown || keyS.isDown) {
             console.log("PRESSSSSSSSSSSSSSSSSSSSSSSS")
         }
     } else {
-        console.log("not within range of interactible" + playerTotargetLocation);
+        // console.log("not within range of interactible" + playerTotargetLocation);
         this.alert.setVisible(false);
     }
 
