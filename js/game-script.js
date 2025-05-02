@@ -53,10 +53,10 @@ function create() {
     this.cursors = this.input.keyboard.createCursorKeys();
     cursors = this.cursors; // make cursors available globally
 
-    this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false);
+    this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
     let stairs = this.physics.add.staticGroup();
-    this.chineseFood = this.physics.add.sprite(150, 80, "alert").setScale(2.5).setVisible(false).setGravityY(0).setDrag(0, 999); //chinese food alert
-    this.alert = this.physics.add.sprite(this.chineseFood.x, this.chineseFood.y + -30, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
+    this.targetLocation = this.physics.add.sprite(150, 80, "null").setScale(0.5).setVisible(false).setGravityY(0).setDrag(0, 999); //chinese food alert
+    this.alert = this.physics.add.sprite(this.targetLocation.x, this.targetLocation.y + -30, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
 
     function collider(object, scene, x, y, width, height) {
         let collider = scene.physics.add.staticSprite(x, y, "transparent");
@@ -125,18 +125,18 @@ function update() {
     }
 
     // checks range
-    let playerToChineseFood = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.chineseFood.x, this.chineseFood.y)
+    let playerTotargetLocation = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.targetLocation.x, this.targetLocation.y)
 
-    console.log("--------------------playerToChineseFood: " + playerToChineseFood + "--------------------");
+    console.log("--------------------playerTotargetLocation: " + playerTotargetLocation + "--------------------");
 
-    if (playerToChineseFood < 70) {
-        console.log("within range of interactible" + playerToChineseFood);
+    if (playerTotargetLocation < 70) {
+        console.log("within range of interactible" + playerTotargetLocation);
         this.alert.setVisible(true);
         if (cursors.down.isDown || keyS.isDown) {
             console.log("PRESSSSSSSSSSSSSSSSSSSSSSSS")
         }
     } else {
-        console.log("not within range of interactible" + playerToChineseFood);
+        console.log("not within range of interactible" + playerTotargetLocation);
         this.alert.setVisible(false);
     }
 
