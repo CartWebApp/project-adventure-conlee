@@ -160,3 +160,23 @@ function update() {
     }
     
 }
+
+
+  // this.targetLocation = this.physics.add.sprite(150, 80, "null").setScale(0.5).setVisible(false).setGravityY(0).setDrag(0, 999); //chinese food alert
+    // this.alert = this.physics.add.sprite(this.targetLocation.x, this.targetLocation.y + -30, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
+
+      // // checks range
+    // let playerTotargetLocation = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.targetLocation.x, this.targetLocation.y)
+
+    // // console.log("--------------------playerTotargetLocation: " + playerTotargetLocation + "--------------------");
+
+    // if (playerTotargetLocation < 70) {
+    //     // console.log("within range of interactible" + playerTotargetLocation);
+    //     this.alert.setVisible(true);
+    //     if (cursors.down.isDown || keyS.isDown) {
+    //         console.log("PRESSSSSSSSSSSSSSSSSSSSSSSS")
+    //     }
+    // } else {
+    //     // console.log("not within range of interactible" + playerTotargetLocation);
+    //     this.alert.setVisible(false);
+    // }

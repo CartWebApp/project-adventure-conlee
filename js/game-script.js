@@ -5,6 +5,7 @@ var config = {
     type: Phaser.AUTO,
     width: visualViewport.width,
     height: visualViewport.height,
+
     physics: {
         default: 'arcade',
         arcade: {
@@ -31,6 +32,7 @@ let keyW
 let keyA
 let keyS
 let keyD
+let keyEnter
 
 // =====================================================================
 function preload() {
@@ -45,10 +47,12 @@ function preload() {
 
 // =====================================================================
 function create() {
+    document.getElementById("onscreenText").style.display = "none"; // Hide the dialog box initially
     keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
     this.add.image(0, 0, "basement").setScale(2.5);
     this.add.image(2000, 43, "lab").setScale(2.5);
@@ -57,8 +61,7 @@ function create() {
 
     this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
     let stairs = this.physics.add.staticGroup();
-    this.targetLocation = this.physics.add.sprite(150, 80, "null").setScale(0.5).setVisible(false).setGravityY(0).setDrag(0, 999); //chinese food alert
-    this.alert = this.physics.add.sprite(this.targetLocation.x, this.targetLocation.y + -30, "alert").setScale(4).setDrag(0, 999).setGravityY(0).setVisible(false);
+  
 
     function collider(object, scene, x, y, width, height) {
         let collider = scene.physics.add.staticSprite(x, y, "transparent");
@@ -103,30 +106,34 @@ function create() {
 }
 // =====================================================================
 
-
+ let isInDialog = false
 
 // =====================================================================
 function update() {
 
-    if (cursors.left.isDown || keyA.isDown) {
-        this.player.setVelocityX(-160);
-        this.player.scaleX = -2.2
-        this.player.body.setOffset(20, 0)
+    if (isInDialog == false || isInDialog == undefined) {
+        if (cursors.left.isDown || keyA.isDown) {
+            this.player.setVelocityX(-160);
+            this.player.scaleX = -2.2
+            this.player.body.setOffset(20, 0)
+        }
+    
+        else if (cursors.right.isDown || keyD.isDown) {
+            this.player.setVelocityX(160);
+            this.player.scaleX = 2.2
+            this.player.body.setOffset(0, 0)
+        }
+    
+        else {
+            this.player.setVelocityX(0);
+        }
+    
+        if (cursors.up.isDown && this.player.body.touching.down || keyW.isDown && this.player.body.touching.down) {
+            this.player.setVelocityY(-250);
+        }
     }
 
-    else if (cursors.right.isDown || keyD.isDown) {
-        this.player.setVelocityX(160);
-        this.player.scaleX = 2.2
-        this.player.body.setOffset(0, 0)
-    }
 
-    else {
-        this.player.setVelocityX(0);
-    }
-
-    if (cursors.up.isDown && this.player.body.touching.down || keyW.isDown && this.player.body.touching.down) {
-        this.player.setVelocityY(-250);
-    }
 
     if (this.alerts == false || this.alerts == undefined) {
         this.alerts = {};
@@ -145,14 +152,14 @@ function update() {
         const playerToTargetLocation = Phaser.Math.Distance.Between(player.x, player.y, x, y);
 
         if (playerToTargetLocation < 70) {
-            console.log("within range of interactible " + playerToTargetLocation);
+            // console.log("within range of interactible " + playerToTargetLocation);
             alert.setVisible(true);
             if (cursors.down.isDown || keyS.isDown) {
                 console.log("Press Detect! " + playerToTargetLocation);
                 funct();
             }
         } else {
-            console.log("not within range of interactible lkuhfalkdsjhflakjdshf " + playerToTargetLocation);
+            // console.log("not within range of interactible" + playerToTargetLocation);
             alert.setVisible(false);
         }
     }
@@ -163,23 +170,19 @@ function update() {
         this.player.y = 0
     });
 
-    
+    playerNearAlert(this.player, this, 150, 50, () => {
+        console.log("Interacted with target location!"); 
+        document.getElementById("onscreenText").style.display = "flex";
+        isInDialog = true;
+    });
 
-    // checks range
-    let playerTotargetLocation = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.targetLocation.x, this.targetLocation.y)
-
-    // console.log("--------------------playerTotargetLocation: " + playerTotargetLocation + "--------------------");
-
-    if (playerTotargetLocation < 70) {
-        // console.log("within range of interactible" + playerTotargetLocation);
-        this.alert.setVisible(true);
-        if (cursors.down.isDown || keyS.isDown) {
-            console.log("PRESSSSSSSSSSSSSSSSSSSSSSSS")
-        }
-    } else {
-        // console.log("not within range of interactible" + playerTotargetLocation);
-        this.alert.setVisible(false);
+    if (keyEnter.isDown && isInDialog) {;
+        document.getElementById("onscreenText").style.display = "none";
+        isInDialog = false;
+        console.log("Dialog closed");
     }
+
+  
 
 }
 // =====================================================================
