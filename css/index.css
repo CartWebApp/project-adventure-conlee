@@ -29,6 +29,7 @@ button {
     background-color: black;
     border: 1px solid #6C9BD9;
     color: #6C9BD9;
+    cursor: pointer;
 }
 
 .info {
@@ -67,10 +68,7 @@ button {
     cursor: pointer;
 }
 
-#down {
-    
-    
-}
+
 
 #inter {
     margin-top: -50px;
