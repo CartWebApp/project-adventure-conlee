@@ -19,6 +19,79 @@ body {
 }
 
 
+.controls {
+    margin-top: 20px;
+}
+
+button {
+    height: 4vh;
+    width: 6vw;
+    background-color: black;
+    border: 1px solid #6C9BD9;
+    color: #6C9BD9;
+}
+
+.info {
+    background-color: #6C9BD9;
+    height: 60vh;
+    width: 35vw;
+    margin-top: -190px;
+    display: none;
+}
+
+
+.svg {
+    height: 5vh;
+    width: 5vw;
+    margin-top: 100px;
+}
+.svg2 {
+    height: 3vh;
+    width: 3vw;
+}
+.img {
+    height: 6vh;
+    width: 3vw;
+}
+
+.top-img {
+    display: flex;
+    flex-direction: row;
+    margin-top: 50px;
+}
+
+#x {
+    margin-left: 350px;
+    margin-top: 10px;
+    margin-left: 660px;
+    cursor: pointer;
+}
+
+#down {
+    
+    
+}
+
+#inter {
+    margin-top: -50px;
+    margin-left: 155px;
+}
+
+.interact {
+    margin-left: -605px;
+    margin-top: 150px;
+}
+
+.top-img p {
+    color: black;
+   font-size: 1rem;
+   margin-top: 110px;
+}
+
+.movement {
+    margin-top: -50px;
+}
+
 .text-draw {
     font-size: 3.5rem;
     stroke: #6C9BD9;
