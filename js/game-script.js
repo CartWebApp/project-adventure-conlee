@@ -1,3 +1,5 @@
+import { myFunction } from './function-holder.js';
+
 let centerScreenW = visualViewport.width / 2
 let centerScreenH = visualViewport.height / 2
 
@@ -33,8 +35,13 @@ let keyA
 let keyS
 let keyD
 let keyEnter
+let keyUP
+let keyDOWN
+let keyLEFT
+let keyRIGHT
 let selectedOption = 1
 let canSelect = true
+let canSelect2 = true
 let isInDialog = false
 let basementDoorUnlocked = false
 
@@ -67,13 +74,17 @@ function create() {
     keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+    keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+    keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+    keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
     this.add.image(0, 0, "basement").setScale(2.5);
     this.add.image(2000, 43, "lab").setScale(2.5);
     this.add.image(4000, 0, "teleporter").setScale(2.5);
-    this.cursors = this.input.keyboard.createCursorKeys();
-    cursors = this.cursors; // make cursors available globally
+    // this.cursors = this.input.keyboard.createCursorKeys();
+    // cursors = this.cursors; // make cursors available globally
 
     this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
     let stairs = this.physics.add.staticGroup();
@@ -98,7 +109,7 @@ function create() {
 
     this.cameras.main.startFollow(this.player, true, 1, 1); //camera
     this.cameras.main.setZoom(1);
-    this.cameras.main.setLerp(0.01, 0.1); // Adjust the values for smoother or faster movement
+    this.cameras.main.setLerp(0.05, 0.1); // Adjust the values for smoother or faster movement
 
 
     let stairStartX = -196;  //stairs
@@ -128,13 +139,13 @@ function create() {
 function update() {
 
     if (isInDialog == false || isInDialog == undefined) {
-        if (cursors.left.isDown || keyA.isDown) {
+        if (keyLEFT.isDown || keyA.isDown) {
             this.player.setVelocityX(-160);
             this.player.scaleX = -2.2
             this.player.body.setOffset(20, 0)
         }
 
-        else if (cursors.right.isDown || keyD.isDown) {
+        else if (keyRIGHT.isDown || keyD.isDown) {
             this.player.setVelocityX(160);
             this.player.scaleX = 2.2
             this.player.body.setOffset(0, 0)
@@ -144,7 +155,7 @@ function update() {
             this.player.setVelocityX(0);
         }
 
-        if (cursors.up.isDown && this.player.body.touching.down || keyW.isDown && this.player.body.touching.down) {
+        if (keyUP.isDown && this.player.body.touching.down || keyW.isDown && this.player.body.touching.down) {
             this.player.setVelocityY(-250);
         }
     }
@@ -155,20 +166,26 @@ function update() {
     }
 
     const cameraCenterX = this.cameras.main.scrollX + this.cameras.main.width / 2;
-    console.log(cameraCenterX)
+    // console.log(cameraCenterX)
     function teleportPlayer(scene, x, y) {
         scene.cameras.main.setLerp(1, 1); // Adjust the values for smoother or faster movement
         scene.player.x = x
         scene.player.y = y
     }
 
-    if (this.player.x == cameraCenterX) {
-        this.cameras.main.setLerp(0.01, 0.1);
+    console.log(Math.trunc(this.player.x) + " " + Math.trunc(cameraCenterX))
 
+    if (Math.trunc(this.player.x) == Math.trunc(cameraCenterX)) {
+        this.cameras.main.setLerp(0.05, 0.1);
+        console.log(";oseifjlskdrh liqehglc xjrdloksghlkashg;kszhgrl;kdjh")
     }
 
     if (this.alerts == false || this.alerts == undefined) {
         this.alerts = {};
+    }
+
+    function compressInput(thing1, thing2) {
+        return thing1 + thing2
     }
 
     function playerNearAlert(player, scene, x, y, funct) {
@@ -186,7 +203,7 @@ function update() {
         if (playerToTargetLocation < 70) {
             // console.log("within range of interactible " + playerToTargetLocation);
             alert.setVisible(true);
-            if (cursors.down.isDown || keyS.isDown) {
+            if (keyDOWN.isDown || keyS.isDown) {
                 console.log("Press Detect! " + playerToTargetLocation);
                 funct();
             }
@@ -212,30 +229,51 @@ function update() {
 
     });
 
+    myFunction()
+
     playerNearAlert(this.player, this, 150, 50, () => {
+        dialogOptions("Go to the lab", "Go to the basement", "Leave", () => null, () => null, () => compressInput(eval("basementDoorUnlocked = true"), exitDialog()));
+    });
+
+
+    if (!isInDialog && canSelect) {
+        selectedOption = 4
+    }
+
+    function dialogOptions(opt1, opt2, opt3, act1, act2, act3) {
+        option1.innerHTML = opt1
+        option2.innerHTML = opt2
+        option3.innerHTML = opt3
+
+        if (!canSelect2) return; // Exit early if canSelect2 is false
+
+        console.log(canSelect2 + " " + selectedOption + "AAAAAAAA");
         console.log("Interacted with target location! aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         document.getElementById("onscreenText").style.display = "flex";
         isInDialog = true;
-        if (canSelect) {
-            if (selectedOption == 1) {
-                console.log("Option 1 selected");
-                // exitDialog()
-            } else if (selectedOption == 2) {
-                console.log("Option 2 selected");
-                // exitDialog()
-            } else if (selectedOption == 3) {
-                console.log("Option 3 selected");
-                basementDoorUnlocked = true
-                exitDialog()
-            } else {
-                console.log("No option selected");
-                // exitDialog()
-            }
-            setTimeout(() => {
-                canSelect = true
-            }, 150);
+        canSelect2 = false
+
+        if (selectedOption === 1) {
+            console.log("Option 1 selected");
+            act1()
+        } else if (selectedOption === 2) {
+            console.log("Option 2 selected");
+            act2()
+        } else if (selectedOption === 3) {
+            console.log("Option 3 selected");
+            act3()
+        } else if (selectedOption === 4) {
+            console.log("Option 4 selected");
+        } else {
+            console.log("No option selected");
+            // exitDialog()
         }
-    });
+        setTimeout(() => {
+            canSelect2 = true
+        }, 150);
+    }
+
+
 
     function selectingOption(upOrDown) {
         if (canSelect) {
@@ -273,9 +311,9 @@ function update() {
     }
 
     if (isInDialog) {
-        if (cursors.right.isDown || keyD.isDown) {
+        if (keyRIGHT.isDown || keyD.isDown) {
             selectingOption(1)
-        } else if (cursors.left.isDown || keyA.isDown) {
+        } else if (keyLEFT.isDown || keyA.isDown) {
             selectingOption(-1)
         }
     }
