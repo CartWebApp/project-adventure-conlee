@@ -74,6 +74,7 @@ function preload() {
     this.load.image("player", "../media/guy-standingT.png");
     this.load.image("alert", "../media/Alert!.png");
     this.load.image("lab", "../media/inside-labratory.png");
+    this.load.image("job", "../media/mine-shaft-1stteleporter.png");
 }
 // =====================================================================
 
@@ -95,6 +96,7 @@ function create() {
     this.add.image(0, 0, "basement").setScale(2.5);
     this.add.image(2000, 43, "lab").setScale(2.5);
     this.add.image(4000, 0, "teleporter").setScale(2.5);
+    this.add.image(6000, 0, "job").setScale(2.5);
 
     thePlayer = this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
     let stairs = this.physics.add.staticGroup();
