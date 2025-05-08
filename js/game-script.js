@@ -1,4 +1,4 @@
-import { myFunction } from './function-holder.js';
+import { myFunction, selectingOption, canSelect, selectedOption, teleportPlayer } from './function-holder.js';
 
 let centerScreenW = visualViewport.width / 2
 let centerScreenH = visualViewport.height / 2
@@ -13,7 +13,7 @@ var config = {
         arcade: {
             gravity: { y: 500 },
             // overlapBias: 99,
-            debug: true
+            debug: false
         },
 
     },
@@ -39,15 +39,27 @@ let keyUP
 let keyDOWN
 let keyLEFT
 let keyRIGHT
-let selectedOption = 1
-let canSelect = true
 let canSelect2 = true
-let isInDialog = false
+
+let stairStartX = -196;
+let stairStartY = 159;
+let stepWidth = 0.63;
+let stepHeight = 0.626;
+let stepSpacing = 20;
+let stepCount = 16;
+
+
+
+export let thePlayer
+
+export let isInDialog = false
 let basementDoorUnlocked = false
 
-const option1 = document.getElementById("opt1");
-const option2 = document.getElementById("opt2");
-const option3 = document.getElementById("opt3");
+export const option1 = document.getElementById("opt1");
+export const option2 = document.getElementById("opt2");
+export const option3 = document.getElementById("opt3");
+const name = document.getElementById("name");
+const textContent = document.getElementById("textContent");
 option1.classList.remove("highlight", "normal");
 option2.classList.remove("highlight", "normal");
 option3.classList.remove("highlight", "normal");
@@ -69,7 +81,6 @@ function preload() {
 
 // =====================================================================
 function create() {
-    document.getElementById("onscreenText").style.display = "none"; // Hide the dialog box initially
     keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -80,15 +91,19 @@ function create() {
     keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
+    document.getElementById("onscreenText").style.display = "none"; // Hide the dialog box initially
     this.add.image(0, 0, "basement").setScale(2.5);
     this.add.image(2000, 43, "lab").setScale(2.5);
     this.add.image(4000, 0, "teleporter").setScale(2.5);
-    // this.cursors = this.input.keyboard.createCursorKeys();
-    // cursors = this.cursors; // make cursors available globally
 
-    this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
+    thePlayer = this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
     let stairs = this.physics.add.staticGroup();
 
+    this.physics.add.collider(this.player, stairs);
+
+    this.cameras.main.startFollow(this.player, true, 1, 1); //camera
+    this.cameras.main.setZoom(1);
+    this.cameras.main.setLerp(0.05, 0.1); // Adjust the values for smoother or faster movement
 
     function collider(object, scene, x, y, width, height) {
         let collider = scene.physics.add.staticSprite(x, y, "transparent");
@@ -96,28 +111,6 @@ function create() {
         scene.physics.add.collider(object, collider); // add collider to the object
         return collider;
     }
-
-    collider(this.player, this, 0, 157, 500, 0.1) //floor
-    collider(this.player, this, -300, -155, 10, 0.1) //ceiling
-    collider(this.player, this, 110, -85, 21, 0.1) //ceiling lower
-    collider(this.player, this, 450, 0, 0.1, 10) //right wall
-    collider(this.player, this, -450, 0, 0.1, 10) //left wall
-
-
-    collider(this.player, this, -430, -36, 2, 0.5) //stair top landing
-    this.physics.add.collider(this.player, stairs);
-
-    this.cameras.main.startFollow(this.player, true, 1, 1); //camera
-    this.cameras.main.setZoom(1);
-    this.cameras.main.setLerp(0.05, 0.1); // Adjust the values for smoother or faster movement
-
-
-    let stairStartX = -196;  //stairs
-    let stairStartY = 159;
-    let stepWidth = 0.63;
-    let stepHeight = 0.626;
-    let stepSpacing = 20;
-    let stepCount = 16;
 
     for (let i = 0; i < stepCount; i++) {
         let stepX = stairStartX - i * stepWidth * stepSpacing;
@@ -129,6 +122,12 @@ function create() {
         step.refreshBody();
     }
 
+    collider(this.player, this, 0, 157, 500, 0.1) //floor
+    collider(this.player, this, -300, -155, 10, 0.1) //ceiling
+    collider(this.player, this, 110, -85, 21, 0.1) //ceiling lower
+    collider(this.player, this, 450, 0, 0.1, 10) //right wall
+    collider(this.player, this, -450, 0, 0.1, 10) //left wall
+    collider(this.player, this, -430, -36, 2, 0.5) //stair top landing
 
 }
 // =====================================================================
@@ -137,6 +136,8 @@ function create() {
 
 // =====================================================================
 function update() {
+
+    // collectionOfColliders()
 
     if (isInDialog == false || isInDialog == undefined) {
         if (keyLEFT.isDown || keyA.isDown) {
@@ -162,22 +163,15 @@ function update() {
 
     if (isInDialog) {
         this.player.setVelocityX(0);
-        // this.player.body.setOffset(0, 0)
     }
 
     const cameraCenterX = this.cameras.main.scrollX + this.cameras.main.width / 2;
-    // console.log(cameraCenterX)
-    function teleportPlayer(scene, x, y) {
-        scene.cameras.main.setLerp(1, 1); // Adjust the values for smoother or faster movement
-        scene.player.x = x
-        scene.player.y = y
-    }
 
     console.log(Math.trunc(this.player.x) + " " + Math.trunc(cameraCenterX))
 
     if (Math.trunc(this.player.x) == Math.trunc(cameraCenterX)) {
         this.cameras.main.setLerp(0.05, 0.1);
-        console.log(";oseifjlskdrh liqehglc xjrdloksghlkashg;kszhgrl;kdjh")
+        // console.log(";oseifjlskdrh liqehglc xjrdloksghlkashg;kszhgrl;kdjh")
     }
 
     if (this.alerts == false || this.alerts == undefined) {
@@ -217,8 +211,6 @@ function update() {
         console.log("Interacted with target location!");
         if (basementDoorUnlocked) {
             teleportPlayer(this, 2000, 0) // teleport to lab
-            // this.player.x = 2100
-            // this.player.y = 0
         }
 
     });
@@ -229,21 +221,16 @@ function update() {
 
     });
 
-    myFunction()
-
     playerNearAlert(this.player, this, 150, 50, () => {
-        dialogOptions("Go to the lab", "Go to the basement", "Leave", () => null, () => null, () => compressInput(eval("basementDoorUnlocked = true"), exitDialog()));
+        dialogOptions("Get a job", "Complain", "Go to the location", () => null, () => null, () => compressInput(eval("basementDoorUnlocked = true"), exitDialog()), "Narrator", "What are you going to do with the Fortune Cookie?");
     });
 
-
-    if (!isInDialog && canSelect) {
-        selectedOption = 4
-    }
-
-    function dialogOptions(opt1, opt2, opt3, act1, act2, act3) {
+    function dialogOptions(opt1, opt2, opt3, act1, act2, act3, name1, textContent1) {
         option1.innerHTML = opt1
         option2.innerHTML = opt2
         option3.innerHTML = opt3
+        name.innerHTML = name1 + " : "
+        textContent.innerHTML = textContent1
 
         if (!canSelect2) return; // Exit early if canSelect2 is false
 
@@ -271,43 +258,6 @@ function update() {
         setTimeout(() => {
             canSelect2 = true
         }, 150);
-    }
-
-
-
-    function selectingOption(upOrDown) {
-        if (canSelect) {
-            canSelect = false
-            selectedOption += upOrDown
-            if (selectedOption <= 0) {
-                selectedOption = 3
-            } else if (selectedOption >= 4) {
-                selectedOption = 1
-            }
-            option1.classList.remove("highlight", "normal");
-            option2.classList.remove("highlight", "normal");
-            option3.classList.remove("highlight", "normal");
-            if (selectedOption == 1) {
-                option1.classList.toggle("highlight");
-                option2.classList.toggle("normal");
-                option3.classList.toggle("normal");
-                console.log("Option 1 selected");
-            } else if (selectedOption == 2) {
-                option1.classList.toggle("normal");
-                option2.classList.toggle("highlight");
-                option3.classList.toggle("normal");
-                console.log("Option 2 selected");
-            } else if (selectedOption == 3) {
-                option1.classList.toggle("normal");
-                option2.classList.toggle("normal");
-                option3.classList.toggle("highlight");
-                console.log("Option 3 selected");
-            }
-            setTimeout(() => {
-                canSelect = true
-            }, 150);
-        }
-        return selectedOption
     }
 
     if (isInDialog) {
