@@ -1,4 +1,4 @@
-import { myFunction, selectingOption, canSelect, selectedOption, teleportPlayer } from './function-holder.js';
+import { myFunction, teleportPlayer } from './function-holder.js';
 
 let centerScreenW = visualViewport.width / 2
 let centerScreenH = visualViewport.height / 2
@@ -13,7 +13,7 @@ var config = {
         arcade: {
             gravity: { y: 500 },
             // overlapBias: 99,
-            debug: false
+            debug: true
         },
 
     },
@@ -40,6 +40,11 @@ let keyDOWN
 let keyLEFT
 let keyRIGHT
 let canSelect2 = true
+let selectingOptions = false
+let canSelect = true
+let selectedOption = 1
+let canSelect3 = true
+let isTextOnScreen = false
 
 let stairStartX = -196;
 let stairStartY = 159;
@@ -52,14 +57,15 @@ let stepCount = 16;
 
 export let thePlayer
 
-export let isInDialog = false
-let basementDoorUnlocked = false
+export let movementDisabled = false
+let basementDoorUnlocked = 0
 
 export const option1 = document.getElementById("opt1");
 export const option2 = document.getElementById("opt2");
 export const option3 = document.getElementById("opt3");
 const name = document.getElementById("name");
 const textContent = document.getElementById("textContent");
+const dialogBoxOptions = document.getElementById("options");
 option1.classList.remove("highlight", "normal");
 option2.classList.remove("highlight", "normal");
 option3.classList.remove("highlight", "normal");
@@ -73,6 +79,8 @@ function preload() {
     this.load.image("basement", "../media/basement.png");
     this.load.image("player", "../media/guy-standingT.png");
     this.load.image("alert", "../media/Alert!.png");
+    this.load.image("alertLeft", "../media/Alert!-left.png");
+    this.load.image("alertRight", "../media/Alert!-right.png");
     this.load.image("lab", "../media/inside-labratory.png");
 }
 // =====================================================================
@@ -139,7 +147,7 @@ function update() {
 
     // collectionOfColliders()
 
-    if (isInDialog == false || isInDialog == undefined) {
+    if (movementDisabled == false || movementDisabled == undefined) {
         if (keyLEFT.isDown || keyA.isDown) {
             this.player.setVelocityX(-160);
             this.player.scaleX = -2.2
@@ -161,7 +169,7 @@ function update() {
         }
     }
 
-    if (isInDialog) {
+    if (movementDisabled) {
         this.player.setVelocityX(0);
     }
 
@@ -182,12 +190,12 @@ function update() {
         return thing1 + thing2
     }
 
-    function playerNearAlert(player, scene, x, y, funct) {
+    function playerNearAlert(player, scene, x, y, alert1, funct) {
         const alertLocation = `${x},${y}`; // Unique key for each alert based on its position
 
         // Create the alert sprite only if it doesn't already exist
         if (scene.alerts[alertLocation] == false || scene.alerts[alertLocation] == undefined) {
-            const alert = scene.add.sprite(x, y, 'alert');
+            const alert = scene.add.sprite(x, y, alert1);
             alert.setScale(4).setDepth(1).setVisible(false);
             scene.alerts[alertLocation] = alert;
         }
@@ -207,23 +215,117 @@ function update() {
         }
     }
 
-    playerNearAlert(this.player, this, -430, -100, () => {
+    playerNearAlert(this.player, this, -430, -100, "alertLeft", () => {
+        // selectingOptions = true
         console.log("Interacted with target location!");
-        if (basementDoorUnlocked) {
+        if (basementDoorUnlocked == 1) {
+            teleportPlayer(this, 6000, 0) // teleport to lab
+        } else if (basementDoorUnlocked == 2) {
+            teleportPlayer(this, 4000, 0) // teleport to lab
+        } else if (basementDoorUnlocked == 3) {
             teleportPlayer(this, 2000, 0) // teleport to lab
+        } else {
+            onscreenText("player", "nah i dont wanna go outside right now", false);
         }
-
+        // console.log("SELECTIONG OTPNSONS TRYE");
+        // return selectingOptions
     });
 
-    playerNearAlert(this.player, this, 2240, 50, () => {
+    playerNearAlert(this.player, this, 2240, 50, "alertRight", () => {
+        selectingOptions = false
         console.log("Interacted with target location!");
-        teleportPlayer(this, 4000, 0) // teleport to basement
-
+        teleportPlayer(this, 4000, 0); // teleport to basement
+        option1.innerHTML = "adasa";
+        option2.innerHTML = null;
+        option3.innerHTML = null;
+        return selectingOptions
     });
 
-    playerNearAlert(this.player, this, 150, 50, () => {
-        dialogOptions("Get a job", "Complain", "Go to the location", () => null, () => null, () => compressInput(eval("basementDoorUnlocked = true"), exitDialog()), "Narrator", "What are you going to do with the Fortune Cookie?");
+    playerNearAlert(this.player, this, 150, 50, "alert", () => {
+        dialogOptions("Get a job", "Complain", "Go to the location", () => compressInput(eval("basementDoorUnlocked = 1"), exitDialog()), () => compressInput(eval("basementDoorUnlocked = 2"), exitDialog()), () => compressInput(eval("basementDoorUnlocked = 3"), exitDialog()), "Narrator", "What are you going to do with the Fortune Cookie?");
     });
+
+    if (!movementDisabled && canSelect) {
+        selectedOption = 4
+    }
+
+    function enableDialogBox(hasOptions) {
+        document.getElementById("onscreenText").style.display = "flex";
+        if (!hasOptions) { // this is basically the opposite?
+            option1.classList.remove("highlight", "normal");
+            option2.classList.remove("highlight", "normal");
+            option3.classList.remove("highlight", "normal");
+            dialogBoxOptions.style.display = "none";
+        }
+    }
+
+    function onscreenText(name1, textContent1, selectingoptions1) {
+        if (canSelect3) {
+            canSelect3 = false
+            enableDialogBox(false)
+            name.innerHTML = name1 + " : "
+            textContent.innerHTML = textContent1
+            selectingOptions = selectingoptions1
+            movementDisabled = true;
+
+            if (isTextOnScreen) {
+                isTextOnScreen = false;
+                exitDialog()
+                return
+            }
+            isTextOnScreen = true
+            setTimeout(() => {
+                canSelect3 = true
+            }, 150);
+        }
+    }
+
+
+
+
+
+
+
+    if (!movementDisabled && canSelect) {
+        selectedOption = 4
+    }
+
+    function selectingOption(upOrDown) {
+        if (!selectingOptions) {
+            if (canSelect) {
+                canSelect = false
+                selectedOption += upOrDown
+                if (selectedOption <= 0) {
+                    selectedOption = 3
+                } else if (selectedOption >= 4) {
+                    selectedOption = 1
+                }
+                option1.classList.remove("highlight", "normal");
+                option2.classList.remove("highlight", "normal");
+                option3.classList.remove("highlight", "normal");
+                if (selectedOption == 1) {
+                    option1.classList.toggle("highlight");
+                    option2.classList.toggle("normal");
+                    option3.classList.toggle("normal");
+                    console.log("Option 1 selected");
+                } else if (selectedOption == 2) {
+                    option1.classList.toggle("normal");
+                    option2.classList.toggle("highlight");
+                    option3.classList.toggle("normal");
+                    console.log("Option 2 selected");
+                } else if (selectedOption == 3) {
+                    option1.classList.toggle("normal");
+                    option2.classList.toggle("normal");
+                    option3.classList.toggle("highlight");
+                    console.log("Option 3 selected");
+                }
+                setTimeout(() => {
+                    canSelect = true
+                }, 150);
+            }
+            return selectedOption
+        }
+    }
 
     function dialogOptions(opt1, opt2, opt3, act1, act2, act3, name1, textContent1) {
         option1.innerHTML = opt1
@@ -236,8 +338,8 @@ function update() {
 
         console.log(canSelect2 + " " + selectedOption + "AAAAAAAA");
         console.log("Interacted with target location! aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        document.getElementById("onscreenText").style.display = "flex";
-        isInDialog = true;
+        enableDialogBox(true)
+        movementDisabled = true;
         canSelect2 = false
 
         if (selectedOption === 1) {
@@ -260,7 +362,9 @@ function update() {
         }, 150);
     }
 
-    if (isInDialog) {
+
+
+    if (movementDisabled) {
         if (keyRIGHT.isDown || keyD.isDown) {
             selectingOption(1)
         } else if (keyLEFT.isDown || keyA.isDown) {
@@ -270,14 +374,76 @@ function update() {
 
     function exitDialog() {
         document.getElementById("onscreenText").style.display = "none";
-        isInDialog = false;
+        isTextOnScreen = false;
+        movementDisabled = false;
         console.log("Dialog closed");
     }
 
-    if (keyEnter.isDown && isInDialog) {
+
+
+
+    if (keyEnter.isDown && movementDisabled) {
         exitDialog()
         // this is the emergency exit
     }
 
 }
 // =====================================================================
+
+
+
+
+
+
+// TEST THIS
+
+
+// function onscreenText(name1, textContent1, selectingoptions1) {
+//     if (canSelect3) {
+//         canSelect3 = false; // Prevent rapid interactions
+//         enableDialogBox(false);
+//         name.innerHTML = name1 + " : ";
+//         textContent.innerHTML = textContent1;
+//         selectingOptions = selectingoptions1;
+
+//         if (isTextOnScreen) {
+//             // If text is already on screen, exit the dialog
+//             exitDialog();
+//             return; // Exit early to prevent re-enabling the dialog
+//         }
+
+//         // Show the dialog
+//         isTextOnScreen = true;
+//         movementDisabled = true;
+
+//         setTimeout(() => {
+//             canSelect3 = true; // Allow interaction again after debounce
+//         }, 150);
+//     }
+// }
+
+
+
+
+
+// function exitDialog() {
+//     document.getElementById("onscreenText").style.display = "none";
+//     isTextOnScreen = false; // Reset the flag to allow re-interaction
+//     movementDisabled = false; // Allow movement again
+//     console.log("Dialog closed");
+// }
+
+
+
+
+// if (movementDisabled) {
+//     if (keyRIGHT.isDown || keyD.isDown) {
+//         selectingOption(1); // Move to the next option
+//     } else if (keyLEFT.isDown || keyA.isDown) {
+//         selectingOption(-1); // Move to the previous option
+//     }
+// }
+
+// if (keyEnter.isDown && movementDisabled) {
+//     exitDialog(); // Emergency exit from the dialog
+// }
