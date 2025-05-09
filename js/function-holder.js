@@ -1,4 +1,4 @@
-import { movementDisabled, option1, option2, option3, thePlayer } from "./game-script.js";
+// import { movementDisabled, option1, option2, option3, thePlayer } from "./game-script.js";
 
 export function myFunction(data) {
     console.log("Hello from myFunction!", data);
