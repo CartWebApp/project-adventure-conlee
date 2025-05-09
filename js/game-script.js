@@ -178,6 +178,8 @@ createStaircase(this, 10225, 140, 39, 5, 3.5, platforms);
             const x = startX + i * stepWidth;
             const y = startY - i * stepHeight;
     
+            platform.setAlpha(0);
+
             // Create a platform at (x, y)
             const platform = scene.physics.add.staticImage(x, y, 'platform');
             platformGroup.add(platform);
