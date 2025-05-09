@@ -149,7 +149,7 @@ this.physics.add.collider(this.player, platforms); // FIXED — now using correc
 
 // Camera
 this.cameras.main.startFollow(this.player, true, 1, 1);
-this.cameras.main.setZoom(1.5);
+this.cameras.main.setZoom(2);
 this.cameras.main.setLerp(0.05, 0.1);
 
 // Create staircase
