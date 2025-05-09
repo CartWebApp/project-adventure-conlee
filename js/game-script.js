@@ -45,6 +45,7 @@ let canSelect = true
 let selectedOption = 1
 let canSelect3 = true
 let isTextOnScreen = false
+let canSelect4 = true
 
 let stairStartX = -196;
 let stairStartY = 159;
@@ -90,7 +91,7 @@ function preload() {
     this.load.image("cavetwo", "../media/cave-w-door.png");
     this.load.image("chest", "../media/open-chest.png");
     this.load.image("outside", "../media/outside-new.png");
-    
+
 }
 // =====================================================================
 
@@ -117,7 +118,7 @@ function create() {
     this.add.image(10000, 0, "cavetwo").setScale(2.5);
     this.add.sprite(10110, 101, "chest").setScale(2);
     this.add.image(12000, 0, "outside").setScale(2.5);
-    
+
 
 
     thePlayer = this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
@@ -127,7 +128,7 @@ function create() {
     this.physics.add.collider(this.player, "chest");
 
     this.cameras.main.startFollow(this.player, true, 1, 1); //camera
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(1.5);
     this.cameras.main.setLerp(0.05, 0.1); // Adjust the values for smoother or faster movement
 
     function collider(object, scene, x, y, width, height) {
@@ -160,7 +161,7 @@ function create() {
     collider(this.player, this, 2000, -100, 30, 0)//ceiling
     collider(this.player, this, 2250, 110, 0, 3)//wall infront of machine
 
-//inside of teleporter
+    //inside of teleporter
     collider(this.player, this, 3550, 0, 0, 10)//left wall
     collider(this.player, this, 8000, 116, 30, 0);
     collider(this.player, this, 4000, 130, 30, 0)//floor
@@ -175,8 +176,8 @@ function create() {
     collider(this.player, this, 11550, 0, 0, 10);
     collider(this.player, this, 12450, 0, 0, 10);
     collider(this.player, this, 12000, 62, 30, 0);
-    
-    
+
+
 }
 // =====================================================================
 
@@ -189,13 +190,13 @@ function update() {
 
     if (movementDisabled == false || movementDisabled == undefined) {
         if (keyLEFT.isDown || keyA.isDown) {
-            this.player.setVelocityX(-1160);
+            this.player.setVelocityX(-160);
             this.player.scaleX = -2.2
             this.player.body.setOffset(20, 0)
         }
 
         else if (keyRIGHT.isDown || keyD.isDown) {
-            this.player.setVelocityX(1160);
+            this.player.setVelocityX(160);
             this.player.scaleX = 2.2
             this.player.body.setOffset(0, 0)
         }
@@ -271,6 +272,8 @@ function update() {
         // return selectingOptions
     });
 
+    
+
     playerNearAlert(this.player, this, 2240, 50, "alertRight", () => {
         selectingOptions = false
         console.log("Interacted with target location!");
@@ -290,12 +293,23 @@ function update() {
     }
 
     function enableDialogBox(hasOptions) {
-        document.getElementById("onscreenText").style.display = "flex";
-        if (!hasOptions) { // this is basically the opposite?
-            option1.classList.remove("highlight", "normal");
-            option2.classList.remove("highlight", "normal");
-            option3.classList.remove("highlight", "normal");
-            dialogBoxOptions.style.display = "none";
+        if (canSelect4) {
+            canSelect4 = false
+            document.getElementById("onscreenText").style.display = "flex";
+            if (!hasOptions) { // this is basically the opposite?
+                option1.classList.remove("highlight", "normal");
+                option2.classList.remove("highlight", "normal");
+                option3.classList.remove("highlight", "normal");
+                console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+            }
+            dialogBoxOptions.style.display = "flex";
+            option1.classList.add("highlight", "normal");
+            option2.classList.add("highlight", "normal");
+            option3.classList.add("highlight", "normal");
+            console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+            setTimeout(() => {
+                canSelect4 = true
+            }, 300);
         }
     }
 
@@ -318,7 +332,9 @@ function update() {
                 canSelect3 = true
             }, 150);
         }
+        
     }
+
 
 
 
@@ -419,13 +435,12 @@ function update() {
         console.log("Dialog closed");
     }
 
-
-
-
     if (keyEnter.isDown && movementDisabled) {
         exitDialog()
         // this is the emergency exit
     }
+
+
 
 }
 // =====================================================================
@@ -438,52 +453,13 @@ function update() {
 // TEST THIS
 
 
-// function onscreenText(name1, textContent1, selectingoptions1) {
-//     if (canSelect3) {
-//         canSelect3 = false; // Prevent rapid interactions
-//         enableDialogBox(false);
-//         name.innerHTML = name1 + " : ";
-//         textContent.innerHTML = textContent1;
-//         selectingOptions = selectingoptions1;
-
-//         if (isTextOnScreen) {
-//             // If text is already on screen, exit the dialog
-//             exitDialog();
-//             return; // Exit early to prevent re-enabling the dialog
-//         }
-
-//         // Show the dialog
-//         isTextOnScreen = true;
-//         movementDisabled = true;
-
-//         setTimeout(() => {
-//             canSelect3 = true; // Allow interaction again after debounce
-//         }, 150);
-//     }
-// }
 
 
 
 
 
-// function exitDialog() {
-//     document.getElementById("onscreenText").style.display = "none";
-//     isTextOnScreen = false; // Reset the flag to allow re-interaction
-//     movementDisabled = false; // Allow movement again
-//     console.log("Dialog closed");
-// }
 
 
 
 
-// if (movementDisabled) {
-//     if (keyRIGHT.isDown || keyD.isDown) {
-//         selectingOption(1); // Move to the next option
-//     } else if (keyLEFT.isDown || keyA.isDown) {
-//         selectingOption(-1); // Move to the previous option
-//     }
-// }
 
-// if (keyEnter.isDown && movementDisabled) {
-//     exitDialog(); // Emergency exit from the dialog
-// }
