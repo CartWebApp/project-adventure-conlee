@@ -91,7 +91,7 @@ function preload() {
     this.load.image("cavetwo", "../media/cave-w-door.png");
     this.load.image("chest", "../media/open-chest.png");
     this.load.image("outside", "../media/outside-new.png");
-
+    this.load.image("prison", "../media/JAIL-SCENE.png");
 }
 // =====================================================================
 
@@ -112,24 +112,36 @@ function create() {
     document.getElementById("onscreenText").style.display = "none"; // Hide the dialog box initially
     this.add.image(0, 0, "basement").setScale(2.5);
     this.add.image(2000, 43, "lab").setScale(2.5);
-    this.add.image(4000, 0, "teleporter").setScale(2.5);
+    this.add.image(4000, 23, "teleporter").setScale(2.5);
     this.add.image(6000, 0, "job").setScale(2.5);
-    this.add.image(8000, 0, "cave").setScale(2.5);
-    this.add.image(10000, 0, "cavetwo").setScale(2.5);
-    this.add.sprite(10110, 101, "chest").setScale(2);
-    this.add.image(12000, 0, "outside").setScale(2.5);
+    this.add.image(8000, 40, "cave").setScale(2.5);
+    this.add.image(10000, 40, "cavetwo").setScale(2.5);
+    this.add.sprite(10110, 141, "chest").setScale(2);
+    this.add.image(12000, 85, "outside").setScale(2.5);
+    this.add.image(14000, 43, "lab").setScale(2.5);
+    this.add.image(16000, 50, "prison").setScale(2.5);
 
 
 
-    thePlayer = this.player = this.physics.add.sprite(-100, 0, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
-    let stairs = this.physics.add.staticGroup();
+    this.player = this.physics.add.sprite(-100, 0, "player")
+    .setScale(2.2)
+    .setBounce(0)
+    .setCollideWorldBounds(false)
+    .setDepth(2);
+    const stairs = this.physics.add.staticGroup();
+const platforms = this.physics.add.staticGroup();
 
-    this.physics.add.collider(this.player, stairs);
-    this.physics.add.collider(this.player, "chest");
+// Colliders
+this.physics.add.collider(this.player, stairs);
+this.physics.add.collider(this.player, platforms); // FIXED — now using correct player
 
-    this.cameras.main.startFollow(this.player, true, 1, 1); //camera
-    this.cameras.main.setZoom(1.5);
-    this.cameras.main.setLerp(0.05, 0.1); // Adjust the values for smoother or faster movement
+// Camera
+this.cameras.main.startFollow(this.player, true, 1, 1);
+this.cameras.main.setZoom(1.5);
+this.cameras.main.setLerp(0.05, 0.1);
+
+// Create staircase
+createStaircase(this, 10225, 140, 38, 5, 4, platforms);
 
     function collider(object, scene, x, y, width, height) {
         let collider = scene.physics.add.staticSprite(x, y, "transparent");
@@ -148,6 +160,18 @@ function create() {
         step.refreshBody();
     }
 
+//staircase for cave
+    function createStaircase(scene, startX, startY, steps, stepWidth, stepHeight, platformGroup) {
+        for (let i = 0; i < steps; i++) {
+            const x = startX + i * stepWidth;
+            const y = startY - i * stepHeight;
+    
+            // Create a platform at (x, y)
+            const platform = scene.physics.add.staticImage(x, y, 'platform');
+            platformGroup.add(platform);
+        }
+    }
+
     collider(this.player, this, 0, 160, 10000, 0.1) //floor
     collider(this.player, this, -300, -155, 10, 0.1) //ceiling
     collider(this.player, this, 110, -85, 21, 0.1) //ceiling lower
@@ -163,20 +187,31 @@ function create() {
 
     //inside of teleporter
     collider(this.player, this, 3550, 0, 0, 10)//left wall
-    collider(this.player, this, 8000, 116, 30, 0);
-    collider(this.player, this, 4000, 130, 30, 0)//floor
+    collider(this.player, this, 4450, 0, 0, 10)//left wall
+    // collider(this.player, this, 8000, 116, 30, 0);
+
 
     //inside cave
-    collider(this.player, this, 8000, 116, 30, 0);
+    collider(this.player, this, 7550, 0, 0, 10);
+    collider(this.player, this, 8450, 0, 0, 10);
 
     //second cave
-    collider(this.player, this, 8000, 116, 30, 0);
+    collider(this.player, this, 9550, 0, 0, 10);
+    collider(this.player, this, 10450, 0, 0, 10);
 
     //outside
     collider(this.player, this, 11550, 0, 0, 10);
     collider(this.player, this, 12450, 0, 0, 10);
-    collider(this.player, this, 12000, 62, 30, 0);
 
+    // second lab scene
+    collider(this.player, this, 13550, 0, 0, 10)//left wall
+    collider(this.player, this, 14450, 0, 0, 10)//right wall
+    collider(this.player, this, 14000, -100, 30, 0)//ceiling
+    collider(this.player, this, 14250, 110, 0, 3)//wall infront of machine
+
+    // jail scene
+    collider(this.player, this, 15550, 0, 0, 10)//left wall
+    collider(this.player, this, 16450, 0, 0, 10)//right wall
 
 }
 // =====================================================================
@@ -190,13 +225,13 @@ function update() {
 
     if (movementDisabled == false || movementDisabled == undefined) {
         if (keyLEFT.isDown || keyA.isDown) {
-            this.player.setVelocityX(-160);
+            this.player.setVelocityX(-2160);
             this.player.scaleX = -2.2
             this.player.body.setOffset(20, 0)
         }
 
         else if (keyRIGHT.isDown || keyD.isDown) {
-            this.player.setVelocityX(160);
+            this.player.setVelocityX(2160);
             this.player.scaleX = 2.2
             this.player.body.setOffset(0, 0)
         }
