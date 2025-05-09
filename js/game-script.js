@@ -173,17 +173,19 @@ createStaircase(this, 10225, 140, 39, 5, 3.5, platforms);
     }
 
 //staircase for cave
-    function createStaircase(scene, startX, startY, steps, stepWidth, stepHeight, platformGroup) {
-        for (let i = 0; i < steps; i++) {
-            const x = startX + i * stepWidth;
-            const y = startY - i * stepHeight;
-    
-            platform.setAlpha(0);
+function createStaircase(scene, startX, startY, steps, stepWidth, stepHeight, platformGroup) {
+    for (let i = 0; i < steps; i++) {
+        const x = startX + i * stepWidth;
+        const y = startY - i * stepHeight;
 
-            // Create a platform at (x, y)
-            const platform = scene.physics.add.staticImage(x, y, 'platform');
-            platformGroup.add(platform);
-        }
+        // Create a platform at (x, y)
+        const platform = scene.physics.add.staticImage(x, y, 'platform');
+        
+        // Set the platform's alpha to 0 to make it transparent/invisible
+        platform.setAlpha(0);
+
+        // Add the platform to the group
+        platformGroup.add(platform);
     }
 
     collider(this.player, this, 0, 160, 10000, 0.1) //floor
