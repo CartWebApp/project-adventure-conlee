@@ -13,7 +13,7 @@ var config = {
         arcade: {
             gravity: { y: 500 },
             // overlapBias: 99,
-            debug: true
+            debug: false
         },
 
     },
@@ -70,6 +70,7 @@ let thePlayer
 
 
 let basementDoorUnlocked = 0
+let teleporterButtons = 0
 
 export const option1 = document.getElementById("opt1");
 export const option2 = document.getElementById("opt2");
@@ -99,7 +100,12 @@ function preload() {
     this.load.image("cavetwo", "../media/cave-w-door.png");
     this.load.image("chest", "../media/open-chest.png");
     this.load.image("outside", "../media/outside-new.png");
-
+    this.load.image("prison", "../media/JAIL-SCENE.png");
+    this.load.image("blue", "../media/blue-button.png");
+    this.load.image("cyan", "../media/cyan-button.png");
+    this.load.image("red", "../media/red-button.png");
+    this.load.image("pink", "../media/pink-button.png");
+    this.load.image("black", "../media/black-button.png");
 }
 // =====================================================================
 
@@ -120,24 +126,46 @@ function create() {
     dialogBoxBox.style.display = "none"; // Hide the dialog box initially
     this.add.image(0, 0, "basement").setScale(2.5);
     this.add.image(2000, 43, "lab").setScale(2.5);
-    this.add.image(4000, 0, "teleporter").setScale(2.5);
+    this.add.image(4000, 23, "teleporter").setScale(2.5);
     this.add.image(6000, 0, "job").setScale(2.5);
-    this.add.image(8000, 0, "cave").setScale(2.5);
-    this.add.image(10000, 0, "cavetwo").setScale(2.5);
-    this.add.sprite(10110, 101, "chest").setScale(2);
-    this.add.image(12000, 0, "outside").setScale(2.5);
+    this.add.image(8000, 40, "cave").setScale(2.5);
+    this.add.image(10000, 40, "cavetwo").setScale(2.5);
+    this.add.sprite(10110, 141, "chest").setScale(2);
+    this.add.image(12000, 85, "outside").setScale(2.5);
+    this.add.image(14000, 43, "lab").setScale(2.5);
+    this.add.image(16000, 50, "prison").setScale(2.5);
+    this.add.image(3834, 101, "blue").setScale(2.6);
+    this.add.image(3939, 101, "cyan").setScale(2.6);
+    this.add.image(4044, 101, "red").setScale(2.6);
+    this.add.image(4149, 101, "pink").setScale(2.6);
+    this.add.image(4254, 101, "black").setScale(2.6);
+    
 
 
 
-    thePlayer = this.player = this.physics.add.sprite(-423, -88, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
-    let stairs = this.physics.add.staticGroup();
+    // thePlayer = this.player = this.physics.add.sprite(-423, -88, "player").setScale(2.2).setBounce(0).setCollideWorldBounds(false).setDepth(2);
+    // let stairs = this.physics.add.staticGroup();
 
-    this.physics.add.collider(this.player, stairs);
-    this.physics.add.collider(this.player, "chest");
 
-    this.cameras.main.startFollow(this.player, true, 1, 1); //camera
-    this.cameras.main.setZoom(1.5);
-    this.cameras.main.setLerp(0.05, 0.1); // Adjust the values for smoother or faster movement
+    this.player = this.physics.add.sprite(-100, 0, "player")
+    .setScale(2.2)
+    .setBounce(0)
+    .setCollideWorldBounds(false)
+    .setDepth(2);
+    const stairs = this.physics.add.staticGroup();
+const platforms = this.physics.add.staticGroup();
+
+// Colliders
+this.physics.add.collider(this.player, stairs);
+this.physics.add.collider(this.player, platforms); // FIXED — now using correct player
+
+// Camera
+this.cameras.main.startFollow(this.player, true, 1, 1);
+this.cameras.main.setZoom(2);
+this.cameras.main.setLerp(0.05, 0.1);
+
+// Create staircase
+createStaircase(this, 10225, 140, 39, 5, 3.5, platforms);
 
     function collider(object, scene, x, y, width, height) {
         let collider = scene.physics.add.staticSprite(x, y, "transparent");
@@ -156,6 +184,22 @@ function create() {
         step.refreshBody();
     }
 
+//staircase for cave
+function createStaircase(scene, startX, startY, steps, stepWidth, stepHeight, platformGroup) {
+    for (let i = 0; i < steps; i++) {
+        const x = startX + i * stepWidth;
+        const y = startY - i * stepHeight;
+
+        // Create a platform at (x, y)
+        const platform = scene.physics.add.staticImage(x, y, 'platform');
+        
+        // Set the platform's alpha to 0 to make it transparent/invisible
+        platform.setAlpha(0);
+
+        // Add the platform to the group
+        platformGroup.add(platform);
+    }
+
     collider(this.player, this, 0, 160, 10000, 0.1) //floor
     collider(this.player, this, -300, -155, 10, 0.1) //ceiling
     collider(this.player, this, 110, -85, 21, 0.1) //ceiling lower
@@ -171,20 +215,36 @@ function create() {
 
     //inside of teleporter
     collider(this.player, this, 3550, 0, 0, 10)//left wall
-    collider(this.player, this, 8000, 116, 30, 0);
-    collider(this.player, this, 4000, 130, 30, 0)//floor
+    collider(this.player, this, 4450, 0, 0, 10)//left wall
+    collider(this.player, this, 4000, -100, 30, 0)//ceiling
+    // collider(this.player, this, 8000, 116, 30, 0);
+
 
     //inside cave
-    collider(this.player, this, 8000, 116, 30, 0);
+    collider(this.player, this, 7550, 0, 0, 10);
+    collider(this.player, this, 8450, 0, 0, 10);
+    collider(this.player, this, 8000, -100, 30, 0)//ceiling
 
     //second cave
-    collider(this.player, this, 8000, 116, 30, 0);
+    collider(this.player, this, 9550, 0, 0, 10);
+    collider(this.player, this, 10450, 0, 0, 10);
+    collider(this.player, this, 10000, -100, 30, 0)//ceiling
 
     //outside
     collider(this.player, this, 11550, 0, 0, 10);
     collider(this.player, this, 12450, 0, 0, 10);
-    collider(this.player, this, 12000, 62, 30, 0);
+    collider(this.player, this, 12000, -50, 30, 0)//ceiling
 
+    // second lab scene
+    collider(this.player, this, 13550, 0, 0, 10)//left wall
+    collider(this.player, this, 14450, 0, 0, 10)//right wall
+    collider(this.player, this, 14000, -100, 30, 0)//ceiling
+    collider(this.player, this, 14250, 110, 0, 3)//wall infront of machine
+
+    // jail scene
+    collider(this.player, this, 15550, 0, 0, 10)//left wall
+    collider(this.player, this, 16450, 0, 0, 10)//right wall
+    collider(this.player, this, 16000, -90, 30, 0)//ceiling
 
 }
 // =====================================================================
@@ -315,6 +375,83 @@ function update() {
 
     //         if (!canInteract) return
     //         canInteract = false
+        console.log("Interacted with target location!");
+        if (basementDoorUnlocked == 1) {
+            teleportPlayer(this, 2000, 0) // teleport to lab
+        } else if (basementDoorUnlocked == 2) {
+            teleportPlayer(this, 2000, 0) // teleport to lab
+        } else if (basementDoorUnlocked == 3) {
+            teleportPlayer(this, 2000, 0) // teleport to lab
+        } else {
+            onscreenText("player", "nah i dont wanna go outside right now", false);
+        }
+        // console.log("SELECTIONG OTPNSONS TRYE");
+        // return selectingOptions
+    });
+
+    playerNearAlert(this.player, this, 2240, 50, "alertLeft", () => {
+        console.log("Interacted with target location!");
+        teleportPlayer(this, 4000, 23); // basement
+    });
+    
+    playerNearAlert(this.player, this, 150, 50, "alert", () => {
+        dialogOptions("Get a job", "Complain", "Go to the location", () => compressInput(eval("basementDoorUnlocked = 1"), exitDialog()), () => compressInput(eval("basementDoorUnlocked = 2"), exitDialog()), () => compressInput(eval("basementDoorUnlocked = 3"), exitDialog()), "Narrator", "What are you going to do with the Fortune Cookie?");
+    });
+    
+    playerNearAlert(this.player, this, 4149, 50, "alertLeft", () => {  // blue button
+        console.log("Clicked correct button");  
+        teleportPlayer(this, 7900, 0);
+    });
+    playerNearAlert(this.player, this, 3834, 50, "alertLeft", () => {   // cyan button
+        console.log("Clicked incorrect button");
+        teleportPlayer(this, -310, -36);
+    });
+    // playerNearAlert(this.player, this, 3944, 50, "alertLeft", () => {  // red button
+    //     console.log("Clicked incorrect button");
+    //     teleportPlayer(this, -310, -36);
+    // });
+    // playerNearAlert(this.player, this, 4049, 50, "alertLeft", () => {  // pink button
+    //     console.log("Clicked incorrect button");
+    //         teleportPlayer(this, -310, -36);
+    // });
+    // playerNearAlert(this.player, this, 4254, 50, "alertLeft", () => { // black button
+    //     console.log("Clicked incorrect button");
+    //         teleportPlayer(this, -310, -36);
+    // });
+
+    // playerNearAlert(this.player, this, 8435, 50, "alertLeft", () => { // teleport from 1st cave to second
+    //     console.log("Going to next cave");
+    //         teleportPlayer(this, 9557, 0);
+    // });
+    
+    
+    playerNearAlert(this.player, this, 8410, 50, "alertRight", () => {   //teleport from 1st cave to 2nd cave
+        console.log("Going to next part of the cave");
+        teleportPlayer(this, 9570, 40);
+    });
+    playerNearAlert(this.player, this, 10110, 100, "alertRight", () => {   //open box
+        console.log("Box Opened");
+        //have a message that says "what the heck the blusotnium was supposed to be in here but it isn't, there is a key though"
+        //this is where the character change from human to inside of a car
+    });
+    playerNearAlert(this.player, this, 10440, -100, "alertRight", () => {   //exit door
+        console.log("Traveling outside the cave");
+        teleportPlayer(this, 11550, 0);
+    });
+
+    playerNearAlert(this.player, this, 10440, -100, "alertRight", () => {   //outside to jail or lab
+        console.log("Traveling outside the cave");
+        teleportPlayer(this, 11550, 0);
+    });
+
+    playerNearAlert(this.player, this, 12440, 60, "alertRight", () => {   //outside to lab
+        console.log("Traveling outside the cave");
+        teleportPlayer(this, 13560, 0);
+    });
+
+    
+
+
 
 
 
