@@ -387,7 +387,7 @@ function update() {
         }
         // console.log("SELECTIONG OTPNSONS TRYE");
         // return selectingOptions
-    });
+    };
 
     playerNearAlert(this.player, this, 2240, 50, "alertLeft", () => {
         console.log("Interacted with target location!");
